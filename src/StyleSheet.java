@@ -47,6 +47,7 @@ public class StyleSheet {
 	protected static String LanguageCommentPrefix = "#"; // String that is used to comment a script (e.g. # for bash
 															// scripts)
 	protected static String LanguageDefaultVariableValue = "none";
+	protected static String LanguageExitCommand="exit 0";
 	// section
 
 	// Name of Variables for the currently sourced file and the qsub-indication
@@ -130,10 +131,10 @@ public class StyleSheet {
 	// Size of node connection icon in px
 	protected static int GUIscriptIconSize = 50;
 	// Size of Qsub Ring for node connection icon in px
-	protected int GUIscriptIconQsubRingSize = 4;
+	protected static int GUIscriptIconQsubRingSize = 4;
 
 	// Maximum Number of Information columns in the properties panel
-	protected int GUIscriptPropertiesPanelMaxNumCol = 4;
+	protected static int GUIscriptPropertiesPanelMaxNumCol = 4;
 
 	// Colors for Qsub indication (color and frame color)
 	protected static Color GUIscriptIconQsubRingFrameColor = Color.BLACK;

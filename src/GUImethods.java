@@ -8,9 +8,11 @@ import java.awt.Insets;
 import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+
 import java.util.LinkedHashMap;
 
 import javax.swing.Icon;

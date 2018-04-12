@@ -8,12 +8,14 @@ import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,8 +25,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -588,7 +592,7 @@ public class Playground extends StyleSheet {
 			PipelineCode += (LanguageRuncommand + " " + thisScript.internal_map.get(InternalVarNameFile) + eol);
 
 		}
-
+		PipelineCode += (LanguageExitCommand + eol);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		String filename_ = dateFormat.format(date).toString().replaceAll("/|:|\\s+", "-");

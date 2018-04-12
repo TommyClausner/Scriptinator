@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Point;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Random;
@@ -95,7 +97,7 @@ public class Script extends StyleSheet implements Serializable {
 
 	protected void load() throws FileNotFoundException, IOException, ScriptinatorException {
 		String path = GUImethods.FileSelectionDialog("select " + LanguageScriptTypeName, LanguageScriptTypeName,
-				LanguageFileExtension, true,true);
+				LanguageFileExtension, true, true);
 
 		internal_map.put(InternalVarNameFile, path);
 		try {
@@ -115,7 +117,7 @@ public class Script extends StyleSheet implements Serializable {
 			}
 		} else {
 			internal_map.put(InternalVarNameFile, GUImethods.FileSelectionDialog("select " + LanguageScriptTypeName,
-					LanguageScriptTypeName, LanguageFileExtension, false,true));
+					LanguageScriptTypeName, LanguageFileExtension, false, true));
 			writeindeed = true;
 		}
 

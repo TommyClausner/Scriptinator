@@ -1,0 +1,6 @@
+English Hello
+Spanish Hola
+French Salut
+German Hallo
+Italian Ciao
+Russian Здравствуйте
