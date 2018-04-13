@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -156,10 +157,18 @@ public class Playground extends StyleSheet {
 		ConnectorsPanel.setBackground(StyleSheet.GUIbackGroundColor);
 		ConnectorsPanel.addMouseListener(new ConnectorsPanelMouseListener());
 		Script thisScript;
+
 		for (int n = 0; n < ScriptsAdded.size(); n++) {
 			thisScript = ScriptsAdded.get(n);
-			selectedScriptIcons.get(n).setLocation(thisScript.Location);
-			ConnectorsPanel.add(selectedScriptIcons.get(n));
+			if (selectedScriptIcons.get(n) == null) {
+				ScriptsAdded.remove(IndicesScriptsAdded.get(thisScript));
+				IndicesScriptsAdded.remove(thisScript);
+				ScriptHierarchy.remove(thisScript);
+				selectedScriptIcons.remove(n);
+			} else {
+				selectedScriptIcons.get(n).setLocation(thisScript.Location);
+				ConnectorsPanel.add(selectedScriptIcons.get(n));
+			}
 		}
 
 		for (int n = 0; n < ScriptsAdded.size(); n++) {
@@ -328,8 +337,10 @@ public class Playground extends StyleSheet {
 		clearbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		clearbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				clearPipeline();
-				reDrawWindow();
+				if (GUImethods.BooleanDialog("Do you really want to clear the pipeline?", "Clear Pipeline")) {
+					clearPipeline();
+					reDrawWindow();
+				}
 			}
 		});
 		ControlPanel.add(clearbtn);
@@ -390,7 +401,7 @@ public class Playground extends StyleSheet {
 		aboutbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		aboutbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showInformation("About");
+				showAboutInformation();
 			}
 		});
 		ControlPanel.add(aboutbtn);
@@ -401,7 +412,11 @@ public class Playground extends StyleSheet {
 		helpbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		helpbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showInformation("Help");
+				try {
+					Desktop.getDesktop().open(new File("README.pdf"));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		ControlPanel.add(helpbtn);
@@ -424,14 +439,11 @@ public class Playground extends StyleSheet {
 		return ControlPanel;
 	}
 
-	public static void showInformation(String whichInformation) {
+	public static void showAboutInformation() {
 
 		File file = null;
-		if (whichInformation.matches("Help")) {
-			file = new File(System.getProperty("user.dir") + filesep + "Help.txt");
-		} else {
-			file = new File(System.getProperty("user.dir") + filesep + "About.txt");
-		}
+
+		file = new File(System.getProperty("user.dir") + filesep + "About.txt");
 
 		FileInputStream fis;
 		try {
@@ -441,17 +453,17 @@ public class Playground extends StyleSheet {
 			fis.close();
 			String HelpInfoText = new String(data, "UTF-8");
 
-			JTextArea HelpInfo = new JTextArea(HelpInfoText);
-			HelpInfo.setHighlighter(null);
-			HelpInfo.setEditable(false);
-			JDialog HelpFrame = GUImethods.makeFrame();
+			JTextArea AboutInfo = new JTextArea(HelpInfoText);
+			AboutInfo.setHighlighter(null);
+			AboutInfo.setEditable(false);
+			JDialog AboutFrame = GUImethods.makeFrame();
 
-			HelpFrame.add(HelpInfo);
-			HelpFrame.pack();
-			HelpFrame.revalidate();
-			HelpFrame.repaint();
-			HelpFrame = GUImethods.centerFrame(HelpFrame);
-			HelpFrame.setVisible(true);
+			AboutFrame.add(AboutInfo);
+			AboutFrame.pack();
+			AboutFrame.revalidate();
+			AboutFrame.repaint();
+			AboutFrame = GUImethods.centerFrame(AboutFrame);
+			AboutFrame.setVisible(true);
 
 		} catch (IOException e) {
 			e.printStackTrace();

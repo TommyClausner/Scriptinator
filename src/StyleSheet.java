@@ -55,8 +55,8 @@ public class StyleSheet {
 	protected static String InternalVarNameQsub = "useqsub"; // use this to indicate internal variable name for qsub use
 	protected static String InternalVarNameLabel = "label";
 	protected static String InternalDefaultLabel = "Unknown file";
-	protected static String InternalVarNameThreeLetter = "ThreeLetter";
-	protected static String InternalDefaultThreeLetter = "UNF";
+	protected static String InternalVarNameShortDescription = "shortLabel";
+	protected static String InternalDefaultShortDescription = "uKn";
 	protected static String InternalPipeExtension = "pipe";
 
 	// Strings to identify start, end and sections of the header

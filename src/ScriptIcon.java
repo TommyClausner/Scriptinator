@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.OverlayLayout;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class ScriptIcon extends StyleSheet implements Serializable {
@@ -82,7 +84,11 @@ public class ScriptIcon extends StyleSheet implements Serializable {
 		JLabel Circle = new JLabel(
 				GUIHelper.new RoundIcon(GUIscriptIconSize, GUIscriptIconQsubRingSize, LocalScript.ScriptObjectColor));
 		ScriptIconPanel.setBounds(0, 0, GUIscriptIconSize, GUIscriptIconSize);
-
+		JLabel ThreeLetterDisp=new JLabel("\t\t"+LocalScript.internal_map.get(InternalVarNameShortDescription), SwingConstants.CENTER);
+		ThreeLetterDisp.setOpaque(false);
+		ThreeLetterDisp.setForeground(Color.WHITE);
+		ThreeLetterDisp.setFont(new Font("Helvetica", Font.BOLD, 16));
+		ScriptIconPanel.add(ThreeLetterDisp, BorderLayout.CENTER);
 		ScriptIconPanel.add(Circle, BorderLayout.CENTER);
 		MakeQsubIndicatorRing(LocalScript.hasqsub);
 

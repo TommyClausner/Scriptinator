@@ -8,7 +8,7 @@
 # file=none
 # useqsub=false
 # label=HelloScript
-# ThreeLetter=HES
+# shortLabel=HeLa
 
 ### Script ###
 

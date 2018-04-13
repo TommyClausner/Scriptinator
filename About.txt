@@ -1,21 +1,9 @@
 ### ABOUT TOMMY'S BASHINATOR 3000 TM ###
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor 
-invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam 
-et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem 
-ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos
-et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus
-est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-takimata sanctus est Lorem ipsum dolor sit amet.   
+Tommy’s Scriptinator 3000 TM aims to provide an interface between code line programming and grafical user interfaces. This can become especially handy in science, where users in general are less skilled in using multiple programming languages. E.g. students entering the field are often confronted with analysis scripts that are stiched together by another person and spend often a significant amount of time figuring out the workflow. This is where Tommy’s Scriptinator 3000 TM slips in.
 
+This project served as the final project for "Introduction to Java for Bioinformatics" summer semester 2018.
 
-Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel
-illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui
-blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem
-ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt
-ut laoreet dolore magna aliquam erat volutpat.   
+Teacher: Arthur Pistorius
 
-Ut wisi enim ad
+After the 17th of April the project can be found at: https://github.com/TommyClausner/Scriptinator

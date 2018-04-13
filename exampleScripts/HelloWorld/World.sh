@@ -8,7 +8,7 @@
 # file=none
 # useqsub=false
 # label=WorldScript
-# ThreeLetter=WOS
+# shortLabel=Wrld
 
 ### Script ###
 
@@ -25,9 +25,9 @@ walltime="24:00:00"
 memory=64gb
 
 # Misc Variables #
-MiscVar=none
+FurtherAdd="!"
 
 ### END HEADER ###
 
 echo $AddThis
-echo $AddThis>>$OutputVar
+echo $AddThis$FurtherAdd>>$OutputVar

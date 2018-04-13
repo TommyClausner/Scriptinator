@@ -31,7 +31,7 @@ public class Script extends StyleSheet implements Serializable {
 			.StringValuePairs2HashMap(InternalVarNameLabel + LanguageDeclareVarUsing + InternalDefaultLabel + eol
 					+ InternalVarNameFile + LanguageDeclareVarUsing + System.getProperty("user.home") + filesep
 					+ InternalVarNameFile + ".sh" + eol + InternalVarNameQsub + LanguageDeclareVarUsing + "false" + eol
-					+ InternalVarNameThreeLetter + LanguageDeclareVarUsing + InternalDefaultThreeLetter, false);
+					+ InternalVarNameShortDescription + LanguageDeclareVarUsing + InternalDefaultShortDescription, false);
 
 	protected LinkedHashMap<String, String> misc_map = HelperMethods
 			.StringValuePairs2HashMap("MiscVarName" + LanguageDeclareVarUsing + LanguageDefaultVariableValue, false);
