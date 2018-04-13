@@ -91,17 +91,12 @@ This function is used to create executable pipelines. Choosing the **P** or **P*
 After that all scripts that were displayed on the playground will be equipped with a header and copied to the respective pipeline folder in the language specific format. Furthermore a runnable pipeline is create. That is a file in the respective language format that calls all copied scripts in the *correct* order. This means that the hierarchy implicated by the connection lines on the playground will be inferred and scripts will be ordered such that a script that is connected *to* will be called prior to a script that is connected *from*.
 
 -------
-
-
 License:
-
 -------
 
 all contents within this repository are using the standard [GPL-3.0 license](http://opensource.org/licenses/GPL-3.0).
 
 -------
-
 remark for those who need it:
-
 -------
 Tommy's Scriptinator 3000 TM is not a registered trade mark. The name is a *funny* reference to the computer game "Thimbleweed Park".
