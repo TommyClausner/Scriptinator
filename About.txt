@@ -16,3 +16,8 @@ Teacher: Arthur Pistorius
 
 After the 17th of April the project can be found at: https://github.com/TommyClausner/
 Scriptinator under the GPL 3.0 license (https://opensource.org/licenses/GPL-3.0)
+
+remark for those who need it:
+
+Tommy's Scriptinator 3000 TM is not a registered trade mark. The name is a funny reference 
+to the computer game "Thimbleweed Park".
