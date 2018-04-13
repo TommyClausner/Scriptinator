@@ -97,3 +97,9 @@ License:
 -------
 
 all contents within this repository are using the standard [GPL-3.0 license](http://opensource.org/licenses/GPL-3.0).
+
+-------
+
+remark for those who need it:
+-------
+Tommy's Scriptinator 3000 TM is not a registered trade mark. The name is a *funny* reference to the computer game "Thimbleweed Park".
