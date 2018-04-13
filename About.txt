@@ -1,9 +1,18 @@
-### ABOUT TOMMY'S BASHINATOR 3000 TM ###
+### ABOUT TOMMY'S SCRIPTINATOR 3000 TM ###
 
-Tommy’s Scriptinator 3000 TM aims to provide an interface between code line programming and grafical user interfaces. This can become especially handy in science, where users in general are less skilled in using multiple programming languages. E.g. students entering the field are often confronted with analysis scripts that are stiched together by another person and spend often a significant amount of time figuring out the workflow. This is where Tommy’s Scriptinator 3000 TM slips in.
+author: Tommy Clausner
 
-This project served as the final project for "Introduction to Java for Bioinformatics" summer semester 2018.
+Tommy’s Scriptinator 3000 TM aims to provide an interface between code line programming 
+and grafical user interfaces. This can become especially handy in science, where users in 
+general are less skilled in using multiple programming languages. E.g. students entering 
+the field are often confronted with analysis scripts that are stiched together by another 
+person and spend often a significant amount of time figuring out the workflow. This is 
+where Tommy’s Scriptinator 3000 TM slips in.
+
+This project served as the final project for "Introduction to Java for Bioinformatics" 
+summer semester 2018 Radound University Nijmegen.
 
 Teacher: Arthur Pistorius
 
-After the 17th of April the project can be found at: https://github.com/TommyClausner/Scriptinator
+After the 17th of April the project can be found at: https://github.com/TommyClausner/
+Scriptinator under the GPL 3.0 license (https://opensource.org/licenses/GPL-3.0)

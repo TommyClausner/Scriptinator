@@ -1,3 +1,26 @@
+
+/*  _______  _______  __   __  __   __  __   __  __   _______                                              
+ * |       ||       ||  |_|  ||  |_|  ||  | |  ||  | |       |                                             
+ * |_     _||   _   ||       ||       ||  |_|  ||__| |  _____|                                             
+ *   |   |  |  | |  ||       ||       ||       |     | |_____                                              
+ *   |   |  |  |_|  ||       ||       ||_     _|     |_____  |                                             
+ *   |   |  |       || ||_|| || ||_|| |  |   |        _____| |                                             
+ *   |___|  |_______||_|   |_||_|   |_|  |___|       |_______|                                             
+ *  _______  _______  ______    ___   _______  _______  ___   __    _  _______  _______  _______  ______   
+ * |       ||       ||    _ |  |   | |       ||       ||   | |  |  | ||   _   ||       ||       ||    _ |  
+ * |  _____||       ||   | ||  |   | |    _  ||_     _||   | |   |_| ||  |_|  ||   _   ||_     _||   | ||  
+ * | |_____ |       ||   |_||_ |   | |   |_| |  |   |  |   | |       ||       ||  | |  |  |   |  |   |_||_ 
+ * |_____  ||      _||    __  ||   | |    ___|  |   |  |   | |  _    ||       ||  |_|  |  |   |  |    __  |
+ *  _____| ||     |_ |   |  | ||   | |   |      |   |  |   | | | |   ||   _   ||       |  |   |  |   |  | |
+ * |_______||_______||___|  |_||___| |___|      |___|  |___| |_|  |__||__| |__||_______|  |___|  |___|  |_|
+ *  _______  _______  _______  _______    _______  __   __                                                 
+ * |       ||  _    ||  _    ||  _    |  |       ||  |_|  |                                                
+ * |___    || | |   || | |   || | |   |  |_     _||       |                                                
+ *  ___|   || | |   || | |   || | |   |    |   |  |       |                                                
+ * |___    || |_|   || |_|   || |_|   |    |   |  |       |                                                
+ *  ___|   ||       ||       ||       |    |   |  | ||_|| |                                                
+ * |_______||_______||_______||_______|    |___|  |_|   |_|                                                
+ */
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -6,8 +29,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import java.io.Serializable;
-
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
@@ -15,9 +36,12 @@ import javax.swing.JPanel;
 import javax.swing.OverlayLayout;
 import javax.swing.SwingConstants;
 
-@SuppressWarnings("serial")
-public class ScriptIcon extends StyleSheet implements Serializable {
+/*
+ * graphical counterpart to a script object. Will be represented as a filled circle on the screen 
+ */
+public class ScriptIcon extends StyleSheet {
 
+	// initialize variables
 	protected ArrayList<JLabel> connections = new ArrayList<JLabel>();
 
 	protected Boolean dragging = false;
@@ -30,6 +54,14 @@ public class ScriptIcon extends StyleSheet implements Serializable {
 	protected GUImethods GUIHelper = new GUImethods();
 	protected LayoutManager overlay = new OverlayLayout(ScriptIconPanel);
 
+	// make script icon from script object
+	public ScriptIcon(Script ScriptIn) {
+		LocalScript = ScriptIn;
+		LocalScript.hasqsub = Boolean.parseBoolean(LocalScript.internal_map.get(InternalVarNameQsub));
+		updateAppearance();
+	}
+
+	// change appearance of outer ring according to whether useqsub is true or false
 	public void MakeQsubIndicatorRing(Boolean visible) {
 		if (visible) {
 			QsubIndicator = new JLabel(GUIHelper.new RoundIcon(GUIscriptIconSize, 1, GUIscriptIconQsubRingColor));
@@ -46,24 +78,8 @@ public class ScriptIcon extends StyleSheet implements Serializable {
 		}
 	}
 
-	public void setSize(int newSize) {
-		GUIscriptIconSize = newSize;
-	}
-
-	public int getSize() {
-		return GUIscriptIconSize;
-	}
-
-	public void setCol(Color newColor) {
-		LocalScript.ScriptObjectColor = newColor;
-	}
-
-	public Color getCol() {
-		return LocalScript.ScriptObjectColor;
-	}
-
+	// update appearance of icon (i.e. redraw)
 	public void updateAppearance() {
-
 		ScriptIconPanel.removeAll();
 		makeGUIobject();
 		ScriptIconPanel.setLocation(LocalScript.Location);
@@ -72,19 +88,15 @@ public class ScriptIcon extends StyleSheet implements Serializable {
 		ScriptIconPanel.setVisible(true);
 	}
 
-	public ScriptIcon(Script ScriptIn) {
-		LocalScript = ScriptIn;
-		LocalScript.hasqsub = Boolean.parseBoolean(LocalScript.internal_map.get(InternalVarNameQsub));
-		updateAppearance();
-	}
-
+	// initialize panel
 	public void makeGUIobject() {
 
 		ScriptIconPanel.setLayout(overlay);
 		JLabel Circle = new JLabel(
 				GUIHelper.new RoundIcon(GUIscriptIconSize, GUIscriptIconQsubRingSize, LocalScript.ScriptObjectColor));
 		ScriptIconPanel.setBounds(0, 0, GUIscriptIconSize, GUIscriptIconSize);
-		JLabel ThreeLetterDisp=new JLabel("\t\t"+LocalScript.internal_map.get(InternalVarNameShortDescription), SwingConstants.CENTER);
+		JLabel ThreeLetterDisp = new JLabel("\t\t" + LocalScript.internal_map.get(InternalVarNameShortDescription),
+				SwingConstants.CENTER);
 		ThreeLetterDisp.setOpaque(false);
 		ThreeLetterDisp.setForeground(Color.WHITE);
 		ThreeLetterDisp.setFont(new Font("Helvetica", Font.BOLD, 16));
@@ -100,8 +112,10 @@ public class ScriptIcon extends StyleSheet implements Serializable {
 		ScriptIconPanel.repaint();
 	}
 
+	// make mouse motion listener for script object
 	protected class ScriptObjectMouseMotionListener implements MouseMotionListener {
 
+		// if dragging, update icon location
 		public void mouseDragged(MouseEvent event) {
 			LocalScript.setPos(Playground.ConnectorsPanel.getMousePosition());
 			Playground.reDrawWindow();
@@ -115,6 +129,7 @@ public class ScriptIcon extends StyleSheet implements Serializable {
 		}
 	}
 
+	// make mouse listener for script object
 	protected class ScriptObjectMouseListener implements MouseListener {
 		public void mouseClicked(MouseEvent event) {
 
@@ -127,6 +142,7 @@ public class ScriptIcon extends StyleSheet implements Serializable {
 			if (event.getButton() == MouseEvent.BUTTON3) {
 			}
 
+			// if double click spawn properties window
 			if (event.getClickCount() == 2 && !event.isConsumed()) {
 
 				ScriptPropertiesGUI Properties = new ScriptPropertiesGUI(LocalScript);
@@ -139,15 +155,19 @@ public class ScriptIcon extends StyleSheet implements Serializable {
 				isselected = false;
 				Playground.selectedScripts.clear();
 				event.consume();
-
+				// if single click, select item for being connected
 			} else if (event.getClickCount() == 1 && !event.isConsumed() & !dragging) {
+
 				isselected = !isselected;
 				if (isselected) {
 					isselected = false;
+					
+					// just to make sure not more than 2 scripts can be selected
 					if (Playground.selectedScripts.size() >= 2) {
 						Playground.selectedScripts.clear();
 					}
 
+					// if one script was already selected, draw / remove line
 					if (Playground.selectedScripts.size() == 1) {
 						if (Playground.selectedScripts.get(0) != LocalScript) {
 							Playground.selectedScripts.add(LocalScript);
@@ -171,8 +191,8 @@ public class ScriptIcon extends StyleSheet implements Serializable {
 		public void mousePressed(MouseEvent event) {
 		}
 
+		// set dragging to false if mouse is not clicked
 		public void mouseReleased(MouseEvent event) {
-
 			if (!event.isConsumed()) {
 				dragging = false;
 				event.consume();

@@ -1,3 +1,26 @@
+
+/*  _______  _______  __   __  __   __  __   __  __   _______                                              
+ * |       ||       ||  |_|  ||  |_|  ||  | |  ||  | |       |                                             
+ * |_     _||   _   ||       ||       ||  |_|  ||__| |  _____|                                             
+ *   |   |  |  | |  ||       ||       ||       |     | |_____                                              
+ *   |   |  |  |_|  ||       ||       ||_     _|     |_____  |                                             
+ *   |   |  |       || ||_|| || ||_|| |  |   |        _____| |                                             
+ *   |___|  |_______||_|   |_||_|   |_|  |___|       |_______|                                             
+ *  _______  _______  ______    ___   _______  _______  ___   __    _  _______  _______  _______  ______   
+ * |       ||       ||    _ |  |   | |       ||       ||   | |  |  | ||   _   ||       ||       ||    _ |  
+ * |  _____||       ||   | ||  |   | |    _  ||_     _||   | |   |_| ||  |_|  ||   _   ||_     _||   | ||  
+ * | |_____ |       ||   |_||_ |   | |   |_| |  |   |  |   | |       ||       ||  | |  |  |   |  |   |_||_ 
+ * |_____  ||      _||    __  ||   | |    ___|  |   |  |   | |  _    ||       ||  |_|  |  |   |  |    __  |
+ *  _____| ||     |_ |   |  | ||   | |   |      |   |  |   | | | |   ||   _   ||       |  |   |  |   |  | |
+ * |_______||_______||___|  |_||___| |___|      |___|  |___| |_|  |__||__| |__||_______|  |___|  |___|  |_|
+ *  _______  _______  _______  _______    _______  __   __                                                 
+ * |       ||  _    ||  _    ||  _    |  |       ||  |_|  |                                                
+ * |___    || | |   || | |   || | |   |  |_     _||       |                                                
+ *  ___|   || | |   || | |   || | |   |    |   |  |       |                                                
+ * |___    || |_|   || |_|   || |_|   |    |   |  |       |                                                
+ *  ___|   ||       ||       ||       |    |   |  | ||_|| |                                                
+ * |_______||_______||_______||_______|    |___|  |_|   |_|                                                
+ */
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -18,7 +41,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+// properties window for individual scripts
 public class ScriptPropertiesGUI extends StyleSheet {
+
+	// predefine used variables
 	protected JPanel[] PropertiesSubPanels;
 	protected JPanel PropertiesPanel = new JPanel();
 	protected JDialog PropertiesDialog;
@@ -30,10 +56,12 @@ public class ScriptPropertiesGUI extends StyleSheet {
 	protected Object[] HashMapsToAdd = new Object[PanelsToAdd.length];
 	protected JPanel mainbuttonpanel = new JPanel();
 
+	// constructor to open the GUI using the respective information obtained from
+	// the input script
 	public ScriptPropertiesGUI(Script ScriptIn) {
 		c.gridx = 0;
 		LocalScript = ScriptIn;
-		LocalScriptOld=ScriptIn;
+		LocalScriptOld = ScriptIn;
 
 		@SuppressWarnings("unchecked")
 		LinkedHashMap<String, String>[] tmp = new LinkedHashMap[] { LocalScript.input_map, LocalScript.output_map,
@@ -45,6 +73,8 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		}
 	}
 
+	// collect information from editable text boxes and update the respective script
+	// object
 	public void collectPanelInfo() {
 		int i = 0;
 		for (JPanel currpanel : PropertiesSubPanels) {
@@ -69,6 +99,7 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		LocalScript.UpdateHeaderString();
 	}
 
+	// create the main dialog
 	public void MakeMainFrame() {
 		PropertiesDialog = GUImethods.makeFrame();
 		PropertiesDialog.setModal(true);
@@ -78,6 +109,7 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		PropertiesDialog.setLocation(x, y);
 	}
 
+	// update the main dialog (i.e. redraw)
 	public void UpdateMainFrame() {
 		JScrollPane scroller = new JScrollPane(PropertiesPanel);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -93,6 +125,7 @@ public class ScriptPropertiesGUI extends StyleSheet {
 
 	}
 
+	// redefine values of editable text boxes as present in the script object
 	@SuppressWarnings("unchecked")
 	public void UpdateMainPanel() {
 		PropertiesPanel = new JPanel();
@@ -107,6 +140,7 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		PropertiesPanel.repaint();
 	}
 
+	// create all buttons on a panel
 	public void MakeButtonPanel() {
 		MakeGridBagConstraints();
 		mainbuttonpanel.setFont(DefaultGUIFont);
@@ -116,16 +150,17 @@ public class ScriptPropertiesGUI extends StyleSheet {
 
 		mainbuttonpanel.add(new JLabel("Script Settings"), c);
 
+		// will spawn a dialog to select a script in the defined language. If the script
+		// already has a valid header, then this information will update the existing
+		// panel information.
 		c.gridy = 2;
-
 		JButton loadbtn = GUImethods.makeButton("Load Script");
 		loadbtn.putClientProperty("JComponent.sizeVariant", "regular");
 		loadbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					LocalScript.load();
-				} catch (IOException | ScriptinatorException e1) {
-					// TODO Auto-generated catch block
+				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 				MakeGridBagConstraints();
@@ -135,8 +170,8 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		});
 		mainbuttonpanel.add(loadbtn, c);
 
+		// closes the Properties window and sets the parameters in the defined way.
 		c.gridy++;
-
 		JButton applybtn = GUImethods.makeButton("Confirm and Close");
 		applybtn.putClientProperty("JComponent.sizeVariant", "regular");
 		applybtn.addActionListener(new ActionListener() {
@@ -147,6 +182,8 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		});
 		mainbuttonpanel.add(applybtn, c);
 
+		// creates a runnable script in the respective language, including the header
+		// information wrapped in language specific comments.
 		c.gridy++;
 		JButton overwritebtn = GUImethods.makeButton("Write to file");
 		overwritebtn.putClientProperty("JComponent.sizeVariant", "regular");
@@ -163,6 +200,7 @@ public class ScriptPropertiesGUI extends StyleSheet {
 
 		mainbuttonpanel.add(overwritebtn, c);
 
+		// executes the script “as is” and outputs to command line
 		c.gridy++;
 		JButton runbtn = GUImethods.makeButton("Run Script");
 		runbtn.putClientProperty("JComponent.sizeVariant", "regular");
@@ -178,18 +216,19 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		});
 		mainbuttonpanel.add(runbtn, c);
 
+		// closes the Properties window and reverts the state to it’s original state
 		c.gridy++;
 		JButton cancelbtn = GUImethods.makeButton("Cancel");
 		cancelbtn.putClientProperty("JComponent.sizeVariant", "regular");
 		cancelbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				LocalScript=LocalScriptOld;
+				LocalScript = LocalScriptOld;
 				PropertiesDialog.dispatchEvent(new WindowEvent(PropertiesDialog, WindowEvent.WINDOW_CLOSING));
 			}
 		});
 		mainbuttonpanel.add(cancelbtn, c);
 
-		// Input Mod Buttons
+		// Buttons for modifying number of variables for "Input", "Output" and "Misc"
 		c.gridy = 1;
 		c.gridx = 0;
 		mainbuttonpanel.add(new JLabel("Input"), c);
@@ -219,7 +258,6 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		});
 		mainbuttonpanel.add(subInbtn, c);
 
-		// Output Mod Buttons
 		c.gridx = 0;
 		c.gridy++;
 		mainbuttonpanel.add(new JLabel("Output"), c);
@@ -249,7 +287,6 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		});
 		mainbuttonpanel.add(subOutbtn, c);
 
-		// Misc Mod Buttons
 		c.gridx = 0;
 		c.gridy++;
 		mainbuttonpanel.add(new JLabel("Misc"), c);
@@ -280,6 +317,7 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		mainbuttonpanel.add(subMiscbtn, c);
 	}
 
+	// reset GridBagConstraints
 	public void MakeGridBagConstraints() {
 		c.fill = GridBagConstraints.BOTH;
 		c.gridy = 0;
@@ -289,6 +327,7 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		c.gridx = 0;
 	}
 
+	// update all graphical components
 	public void updateWindow() {
 		MakeGridBagConstraints();
 		MakeMainFrame();
@@ -298,6 +337,7 @@ public class ScriptPropertiesGUI extends StyleSheet {
 		UpdateMainFrame();
 	}
 
+	// update section arrays
 	public void updateJPanelArray() {
 		int iscode;
 		int n = 0;

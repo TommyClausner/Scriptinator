@@ -1,3 +1,26 @@
+
+/*  _______  _______  __   __  __   __  __   __  __   _______                                              
+ * |       ||       ||  |_|  ||  |_|  ||  | |  ||  | |       |                                             
+ * |_     _||   _   ||       ||       ||  |_|  ||__| |  _____|                                             
+ *   |   |  |  | |  ||       ||       ||       |     | |_____                                              
+ *   |   |  |  |_|  ||       ||       ||_     _|     |_____  |                                             
+ *   |   |  |       || ||_|| || ||_|| |  |   |        _____| |                                             
+ *   |___|  |_______||_|   |_||_|   |_|  |___|       |_______|                                             
+ *  _______  _______  ______    ___   _______  _______  ___   __    _  _______  _______  _______  ______   
+ * |       ||       ||    _ |  |   | |       ||       ||   | |  |  | ||   _   ||       ||       ||    _ |  
+ * |  _____||       ||   | ||  |   | |    _  ||_     _||   | |   |_| ||  |_|  ||   _   ||_     _||   | ||  
+ * | |_____ |       ||   |_||_ |   | |   |_| |  |   |  |   | |       ||       ||  | |  |  |   |  |   |_||_ 
+ * |_____  ||      _||    __  ||   | |    ___|  |   |  |   | |  _    ||       ||  |_|  |  |   |  |    __  |
+ *  _____| ||     |_ |   |  | ||   | |   |      |   |  |   | | | |   ||   _   ||       |  |   |  |   |  | |
+ * |_______||_______||___|  |_||___| |___|      |___|  |___| |_|  |__||__| |__||_______|  |___|  |___|  |_|
+ *  _______  _______  _______  _______    _______  __   __                                                 
+ * |       ||  _    ||  _    ||  _    |  |       ||  |_|  |                                                
+ * |___    || | |   || | |   || | |   |  |_     _||       |                                                
+ *  ___|   || | |   || | |   || | |   |    |   |  |       |                                                
+ * |___    || |_|   || |_|   || |_|   |    |   |  |       |                                                
+ *  ___|   ||       ||       ||       |    |   |  | ||_|| |                                                
+ * |_______||_______||_______||_______|    |___|  |_|   |_|                                                
+ */
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -5,8 +28,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
 
+/*
+ * class used to perform methods on language specific scripts and script objects
+ */
 public class ScriptOperations extends StyleSheet {
 
+	// find header indicator, read header information and rest of the file as plain
+	// text
 	public static String[] ReadScriptFromFileAndSplitHeaderAndCode(String ScriptPath) throws FileNotFoundException {
 		Scanner scanner = null;
 		String[] out_array = new String[2];
@@ -23,6 +51,8 @@ public class ScriptOperations extends StyleSheet {
 		Boolean readline = false;
 		while (scanner.hasNext()) {
 			currline = scanner.nextLine();
+
+			// find start and end of header section
 			if (currline.contains(IndStringEndHeader)) {
 				readline = false;
 				currline = scanner.nextLine();
@@ -34,12 +64,15 @@ public class ScriptOperations extends StyleSheet {
 			if (readline) {
 				FullHeaderString += (currline + eol);
 			} else {
+				// obtain raw code
 				currline = currline.trim();
 				if (!currline.contains(LanguageEnvironment) & !currline.trim().matches("")) {
 					FullFileWithoutHeaderString += (currline + eol);
 				}
 			}
 		}
+
+		// check if file has header, else create one
 		if (!HelperMethods.hasHeader(ScriptPath)) {
 			Script tmp = new Script();
 			FullHeaderString = MakeHeaderString(tmp);
@@ -53,6 +86,7 @@ public class ScriptOperations extends StyleSheet {
 
 	}
 
+	// translate plain text header information into script object
 	public static Script HeaderString2Script(String FullHeaderString) {
 		Script newScript = new Script();
 		newScript.file_header = FullHeaderString;
@@ -60,8 +94,12 @@ public class ScriptOperations extends StyleSheet {
 		LinkedHashMap<String, Integer> headerInfoIndex = new LinkedHashMap<String, Integer>();
 		int i = 1;
 		Boolean isFieldName = true;
+
+		// find indices for subsections
 		for (String currenLine : FullHeaderString.split(eolDelimiter)) {
 
+			// avoiding switch case statement due to its inability to deal with variable
+			// values
 			if (currenLine.matches(
 					LanguageCommentPrefix + ".*" + IndStringInput + ".*" + IndStringEndOfHeaderSection + ".*")) {
 				headerInfoIndex.put(IndStringInput, i);
@@ -112,6 +150,7 @@ public class ScriptOperations extends StyleSheet {
 			}
 		}
 
+		// translate separated string sections into hashmaps and add to new script
 		String tmp = HeaderStringSeparated.get(headerInfoIndex.get(IndStringInput));
 		newScript.input_map = HelperMethods.StringValuePairs2HashMap(tmp, false);
 
@@ -129,6 +168,8 @@ public class ScriptOperations extends StyleSheet {
 		return newScript;
 	}
 
+	// create a header string as used in the language specific scripts from internal
+	// script object header information
 	public static String MakeHeaderString(Script ScriptIn) {
 
 		String constructedHeader = Multiprefix + " " + IndStringBeginHeader + " " + Multiprefix + eol + eol

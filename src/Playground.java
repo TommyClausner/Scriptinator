@@ -1,9 +1,31 @@
+
+/*  _______  _______  __   __  __   __  __   __  __   _______                                              
+ * |       ||       ||  |_|  ||  |_|  ||  | |  ||  | |       |                                             
+ * |_     _||   _   ||       ||       ||  |_|  ||__| |  _____|                                             
+ *   |   |  |  | |  ||       ||       ||       |     | |_____                                              
+ *   |   |  |  |_|  ||       ||       ||_     _|     |_____  |                                             
+ *   |   |  |       || ||_|| || ||_|| |  |   |        _____| |                                             
+ *   |___|  |_______||_|   |_||_|   |_|  |___|       |_______|                                             
+ *  _______  _______  ______    ___   _______  _______  ___   __    _  _______  _______  _______  ______   
+ * |       ||       ||    _ |  |   | |       ||       ||   | |  |  | ||   _   ||       ||       ||    _ |  
+ * |  _____||       ||   | ||  |   | |    _  ||_     _||   | |   |_| ||  |_|  ||   _   ||_     _||   | ||  
+ * | |_____ |       ||   |_||_ |   | |   |_| |  |   |  |   | |       ||       ||  | |  |  |   |  |   |_||_ 
+ * |_____  ||      _||    __  ||   | |    ___|  |   |  |   | |  _    ||       ||  |_|  |  |   |  |    __  |
+ *  _____| ||     |_ |   |  | ||   | |   |      |   |  |   | | | |   ||   _   ||       |  |   |  |   |  | |
+ * |_______||_______||___|  |_||___| |___|      |___|  |___| |_|  |__||__| |__||_______|  |___|  |___|  |_|
+ *  _______  _______  _______  _______    _______  __   __                                                 
+ * |       ||  _    ||  _    ||  _    |  |       ||  |_|  |                                                
+ * |___    || | |   || | |   || | |   |  |_     _||       |                                                
+ *  ___|   || | |   || | |   || | |   |    |   |  |       |                                                
+ * |___    || |_|   || |_|   || |_|   |    |   |  |       |                                                
+ *  ___|   ||       ||       ||       |    |   |  | ||_|| |                                                
+ * |_______||_______||_______||_______|    |___|  |_|   |_|                                                
+ */
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.LayoutManager;
 import java.awt.Point;
@@ -47,7 +69,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.OverlayLayout;
 
+/*
+ * Main part of the program: provides main GUI panel and creates pipeline
+ */
 public class Playground extends StyleSheet {
+
+	// predefine all operating variables
 	protected static JDialog ConnectorsDialog = GUImethods.makeFrame();
 	protected static GUImethods GUIHelper = new GUImethods();
 	protected static JPanel ConnectorsPanel = new JPanel();
@@ -64,20 +91,22 @@ public class Playground extends StyleSheet {
 
 	protected static String SavePath = "";
 
-	public static void clearPipeline() {
-		ScriptsAdded.clear();
-		ScriptHierarchy.clear();
-		IndicesScriptsAdded.clear();
-		selectedScriptIcons.clear();
-		selectedScripts.clear();
-	}
-
+	// constructor: initiates main frame and panel
 	public Playground() {
 		mainPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		MakeMainDialog();
 		reDrawWindow();
 	}
 
+	// update all graphics
+	public static void reDrawWindow() {
+		UpdateMainPanel();
+		UpdateMainDialog();
+		ConnectorsDialog.setVisible(true);
+	}
+
+	// creates main Dialog adding a listener to properly exit the program on window
+	// disposal
 	public void MakeMainDialog() {
 		ConnectorsDialog.addWindowListener(new WindowAdapter() {
 			@Override
@@ -93,6 +122,78 @@ public class Playground extends StyleSheet {
 		ConnectorsDialog = GUImethods.centerFrame(ConnectorsDialog);
 	}
 
+	// reinitializes main dialog
+	public static void UpdateMainDialog() {
+		ConnectorsDialog.getContentPane().removeAll();
+		ConnectorsDialog.getContentPane().add(BorderLayout.CENTER, mainPanel);
+		ConnectorsDialog.revalidate();
+		ConnectorsDialog.repaint();
+
+	}
+
+	// prepare components for being redrawn
+	public static void UpdateMainPanel() {
+		ConnectorsPanel.removeAll();
+		ConnectorsPanel.setLayout(null);
+
+		// set up size corresponding to predefinitions
+		Rectangle ControlPanelDimension = ConnectorsDialog.getBounds();
+		ControlPanelDimension.setBounds(0, 0, ControlPanelDimension.width,
+				ControlPanelDimension.height - MainWindowButtonSize);
+
+		ConnectorsPanel.setBounds(ControlPanelDimension);
+		ConnectorsPanel.setPreferredSize(new Dimension(ControlPanelDimension.width, ControlPanelDimension.height));
+		ConnectorsPanel.setBackground(StyleSheet.GUIbackGroundColor);
+		ConnectorsPanel.addMouseListener(new ConnectorsPanelMouseListener());
+		Script thisScript;
+
+		// make new script icons
+		for (int n = 0; n < ScriptsAdded.size(); n++) {
+			thisScript = ScriptsAdded.get(n);
+			selectedScriptIcons.get(n).setLocation(thisScript.Location);
+			ConnectorsPanel.add(selectedScriptIcons.get(n));
+		}
+
+		// make new connection lines
+		for (int n = 0; n < ScriptsAdded.size(); n++) {
+			thisScript = ScriptsAdded.get(n);
+			if (thisScript.ConnectionFrom != null) {
+				for (int connection : thisScript.ConnectionFrom) {
+
+					ArrayList<Point> points = updateConnectionLine(thisScript.getPos(),
+							ScriptsAdded.get(connection).getPos(), GUIConnectionIndicatorSize);
+					int i = 0;
+					double mod = 1.5;
+					for (Point pointcoords : points) {
+						ConnectorsPanel.add(makeConnectionIndicatorDot(pointcoords,
+								(int) (mod * GUIConnectionIndicatorSize * i / points.size())));
+						i++;
+					}
+				}
+			}
+		}
+
+		// playground panel
+		ConnectorsPanel.revalidate();
+		ConnectorsPanel.repaint();
+		ConnectorsPanel.setLocation(0, MainWindowButtonSize);
+
+		mainPanel.removeAll();
+		mainPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+
+		// create main buttons and add them
+		ControlPanel = mainControlGUI();
+		mainPanel.add(ControlPanel);
+		mainPanel.add(ConnectorsPanel);
+
+		// refresh main panel
+		mainPanel.revalidate();
+		mainPanel.repaint();
+		mainPanel.setVisible(true);
+
+	}
+
+	// create Mouse Listener for main Panel
 	protected static class ConnectorsPanelMouseListener implements MouseListener {
 
 		@Override
@@ -104,6 +205,8 @@ public class Playground extends StyleSheet {
 			if (event.getButton() == MouseEvent.BUTTON3) {
 
 			}
+
+			// double click
 			if (event.getClickCount() == 2 && !event.isConsumed()) {
 				Point currLocation = event.getPoint();
 				Script newScript = new Script();
@@ -130,209 +233,14 @@ public class Playground extends StyleSheet {
 		}
 	}
 
-	public static void reDrawWindow() {
-		UpdateMainPanel();
-		UpdateMainDialog();
-		ConnectorsDialog.setVisible(true);
-	}
-
-	public static void UpdateMainDialog() {
-		ConnectorsDialog.getContentPane().removeAll();
-		ConnectorsDialog.getContentPane().add(BorderLayout.CENTER, mainPanel);
-		ConnectorsDialog.revalidate();
-		ConnectorsDialog.repaint();
-
-	}
-
-	public static void UpdateMainPanel() {
-		ConnectorsPanel.removeAll();
-		ConnectorsPanel.setLayout(null);
-
-		Rectangle ControlPanelDimension = ConnectorsDialog.getBounds();
-		ControlPanelDimension.setBounds(0, 0, ControlPanelDimension.width,
-				ControlPanelDimension.height - MainWindowButtonSize);
-
-		ConnectorsPanel.setBounds(ControlPanelDimension);
-		ConnectorsPanel.setPreferredSize(new Dimension(ControlPanelDimension.width, ControlPanelDimension.height));
-		ConnectorsPanel.setBackground(StyleSheet.GUIbackGroundColor);
-		ConnectorsPanel.addMouseListener(new ConnectorsPanelMouseListener());
-		Script thisScript;
-
-		for (int n = 0; n < ScriptsAdded.size(); n++) {
-			thisScript = ScriptsAdded.get(n);
-			if (selectedScriptIcons.get(n) == null) {
-				ScriptsAdded.remove(IndicesScriptsAdded.get(thisScript));
-				IndicesScriptsAdded.remove(thisScript);
-				ScriptHierarchy.remove(thisScript);
-				selectedScriptIcons.remove(n);
-			} else {
-				selectedScriptIcons.get(n).setLocation(thisScript.Location);
-				ConnectorsPanel.add(selectedScriptIcons.get(n));
-			}
-		}
-
-		for (int n = 0; n < ScriptsAdded.size(); n++) {
-			thisScript = ScriptsAdded.get(n);
-			if (thisScript.ConnectionFrom != null) {
-				for (int connection : thisScript.ConnectionFrom) {
-
-					ArrayList<Point> points = updateConnectionLine(thisScript.getPos(),
-							ScriptsAdded.get(connection).getPos(), GUIConnectionIndicatorSize);
-					int i = 0;
-					double mod = 1.5;
-					for (Point pointcoords : points) {
-						ConnectorsPanel.add(makeConnectionIndicatorDot(pointcoords,
-								(int) (mod * GUIConnectionIndicatorSize * i / points.size())));
-						i++;
-					}
-				}
-			}
-		}
-
-		ConnectorsPanel.revalidate();
-		ConnectorsPanel.repaint();
-		ConnectorsPanel.setLocation(0, MainWindowButtonSize);
-
-		mainPanel.removeAll();
-		mainPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		ControlPanel = mainControlGUI();
-		mainPanel.add(ControlPanel);
-		mainPanel.add(ConnectorsPanel);
-
-		mainPanel.revalidate();
-		mainPanel.repaint();
-		mainPanel.setVisible(true);
-
-	}
-
-	public static JPanel makeConnectionIndicatorDot(Point p, int size) {
-		JPanel Connection = new JPanel();
-		LayoutManager overlayConnections = new OverlayLayout(Connection);
-		Connection.setLayout(overlayConnections);
-
-		JLabel innerCircle = new JLabel(GUIHelper.new RoundIcon(size, 1, GUIscriptIconQsubRingColor));
-		JLabel outerCircle = new JLabel(GUIHelper.new RoundIcon(size, 0, GUIscriptIconQsubRingFrameColor));
-
-		Connection.setBounds(0, 0, size, size);
-		Connection.add(innerCircle);
-		Connection.add(outerCircle, BorderLayout.CENTER);
-		Connection.setBackground(new Color(0, 0, 0, 0));
-		Connection.setLocation(p);
-		Connection.revalidate();
-		Connection.repaint();
-		return Connection;
-	}
-
-	public static ArrayList<Point> updateConnectionLine(Point p1, Point p2, int space) {
-
-		ArrayList<Point> pointlist = new ArrayList<Point>();
-
-		float XDiff = Math.abs(p1.x - p2.x);
-		float YDiff = Math.abs(p1.y - p2.y);
-
-		int NumXPoints = (int) (Math.sqrt(Math.pow(XDiff, 2) + Math.pow(YDiff, 2)) / (float) space);
-		int NumYPoints = (int) (Math.sqrt(Math.pow(XDiff, 2) + Math.pow(YDiff, 2)) / (float) space);
-
-		if (NumYPoints < 1) {
-			NumYPoints = NumXPoints;
-		} else if (NumXPoints < 1) {
-			NumXPoints = NumYPoints;
-		} else if (NumYPoints < 1 & NumXPoints < 1) {
-			NumXPoints = 1;
-			NumYPoints = 1;
-		}
-
-		float[] YPoints = HelperMethods.linspace(p1.getY(), p2.getY(), NumYPoints);
-		float[] XPoints = HelperMethods.linspace(p1.getX(), p2.getX(), NumXPoints);
-
-		for (int i = 0; i < YPoints.length; i++) {
-			Point pointcoords = new Point((int) XPoints[i], (int) YPoints[i]);
-			pointlist.add(pointcoords);
-		}
-		return pointlist;
-	}
-
-	public static void updateConnections() {
-		if (selectedScripts.size() == 2) {
-
-			int IndScript0 = IndicesScriptsAdded.get(selectedScripts.get(0));
-			int IndScript1 = IndicesScriptsAdded.get(selectedScripts.get(1));
-
-			Script tmp1 = selectedScripts.get(1);
-			Boolean add = true;
-			int i = 0;
-			for (int tmpConn : tmp1.ConnectionFrom) {
-				if (tmpConn == IndScript0) {
-					add = false;
-					break;
-				}
-				i++;
-			}
-			if (add) {
-				tmp1.ConnectionFrom.add(IndScript0);
-			} else {
-				tmp1.ConnectionFrom.remove(i);
-			}
-
-			ScriptsAdded.put(IndScript1, tmp1);
-			reDrawWindow();
-		}
-	}
-
-	public static void load() throws ClassNotFoundException, IOException {
-		SavePath = GUImethods.FileSelectionDialog("Select Pipeline Folder", "Pipeline", InternalPipeExtension, true,
-				true);
-
-		FileInputStream fileIn = new FileInputStream(SavePath);
-		ObjectInputStream in = new ObjectInputStream(fileIn);
-		Script[] Oin = (Script[]) in.readObject();
-
-		selectedScriptIcons.clear();
-		ScriptsAdded.clear();
-		IndicesScriptsAdded.clear();
-		in.close();
-		fileIn.close();
-
-		for (Script thisScript : Oin) {
-			ScriptsAdded.put(ScriptsAdded.size(), thisScript);
-			IndicesScriptsAdded.put(thisScript, ScriptsAdded.size() - 1);
-			selectedScriptIcons.add(new ScriptIcon(thisScript).ScriptIconPanel);
-		}
-
-	}
-
-	protected static void save() throws IOException {
-		Boolean writeindeed = false;
-		File f = new File(SavePath);
-		if (f.exists()) {
-			if (GUImethods.BooleanDialog("Overwrite existing file?", "File exists")) {
-				new File(SavePath).delete();
-				writeindeed = true;
-			}
-		} else {
-			writeindeed = true;
-		}
-
-		if (writeindeed) {
-			Script[] Oout = ScriptsAdded.values().toArray(new Script[ScriptsAdded.size()]);
-
-			FileOutputStream FileOutputStream = new FileOutputStream(SavePath);
-			ObjectOutputStream ScriptsPipelineFileOutputStream = new ObjectOutputStream(FileOutputStream);
-			ScriptsPipelineFileOutputStream.writeObject(Oout);
-			ScriptsPipelineFileOutputStream.close();
-			FileOutputStream.close();
-		}
-	}
-
+	// button panel at top of main frame
 	public static JPanel mainControlGUI() {
-		Font buttonFont = new Font("Futura", Font.BOLD, 16);
-
 		ControlPanel.removeAll();
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, MainWindowButtonSize / 3, 0));
 		ControlPanel.setFont(DefaultGUIFont);
 
 		JButton clearbtn = new RoundButton("/");
-		clearbtn.setFont(buttonFont);
+		clearbtn.setFont(GUIScriptIconFont);
 		clearbtn.setForeground(Color.white);
 		clearbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		clearbtn.addActionListener(new ActionListener() {
@@ -346,7 +254,7 @@ public class Playground extends StyleSheet {
 		ControlPanel.add(clearbtn);
 
 		JButton savebtn = new RoundButton("S");
-		savebtn.setFont(buttonFont);
+		savebtn.setFont(GUIScriptIconFont);
 		savebtn.setForeground(Color.white);
 		savebtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		savebtn.addActionListener(new ActionListener() {
@@ -363,7 +271,7 @@ public class Playground extends StyleSheet {
 		ControlPanel.add(savebtn);
 
 		JButton loadbtn = new RoundButton("L");
-		loadbtn.setFont(buttonFont);
+		loadbtn.setFont(GUIScriptIconFont);
 		loadbtn.setForeground(Color.white);
 		loadbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		loadbtn.addActionListener(new ActionListener() {
@@ -380,7 +288,7 @@ public class Playground extends StyleSheet {
 		ControlPanel.add(loadbtn);
 
 		JButton pipebtn = new RoundButton("P");
-		pipebtn.setFont(buttonFont);
+		pipebtn.setFont(GUIScriptIconFont);
 		pipebtn.setForeground(Color.white);
 		pipebtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		pipebtn.addActionListener(new ActionListener() {
@@ -388,7 +296,7 @@ public class Playground extends StyleSheet {
 				getHierarchy();
 				try {
 					makePipeline();
-				} catch (IOException | ScriptinatorException e1) {
+				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -396,7 +304,7 @@ public class Playground extends StyleSheet {
 		ControlPanel.add(pipebtn);
 
 		JButton aboutbtn = new RoundButton("!");
-		aboutbtn.setFont(buttonFont);
+		aboutbtn.setFont(GUIScriptIconFont);
 		aboutbtn.setForeground(Color.white);
 		aboutbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		aboutbtn.addActionListener(new ActionListener() {
@@ -407,7 +315,7 @@ public class Playground extends StyleSheet {
 		ControlPanel.add(aboutbtn);
 
 		JButton helpbtn = new RoundButton("?");
-		helpbtn.setFont(buttonFont);
+		helpbtn.setFont(GUIScriptIconFont);
 		helpbtn.setForeground(Color.white);
 		helpbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		helpbtn.addActionListener(new ActionListener() {
@@ -422,7 +330,7 @@ public class Playground extends StyleSheet {
 		ControlPanel.add(helpbtn);
 
 		JButton exitbtn = new RoundButton("X");
-		exitbtn.setFont(buttonFont);
+		exitbtn.setFont(GUIScriptIconFont);
 		exitbtn.setForeground(Color.white);
 		exitbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		exitbtn.addActionListener(new ActionListener() {
@@ -439,6 +347,7 @@ public class Playground extends StyleSheet {
 		return ControlPanel;
 	}
 
+	// spawn "About" information window
 	public static void showAboutInformation() {
 
 		File file = null;
@@ -471,13 +380,159 @@ public class Playground extends StyleSheet {
 
 	}
 
+	// make dot for connection line
+	public static JPanel makeConnectionIndicatorDot(Point p, int size) {
+		JPanel Connection = new JPanel();
+		LayoutManager overlayConnections = new OverlayLayout(Connection);
+		Connection.setLayout(overlayConnections);
+
+		JLabel innerCircle = new JLabel(GUIHelper.new RoundIcon(size, 1, Color.WHITE));
+		JLabel outerCircle = new JLabel(GUIHelper.new RoundIcon(size, 0, Color.BLACK));
+
+		Connection.setBounds(0, 0, size, size);
+		Connection.add(innerCircle);
+		Connection.add(outerCircle, BorderLayout.CENTER);
+		Connection.setBackground(new Color(0, 0, 0, 0));
+		Connection.setLocation(p);
+		Connection.revalidate();
+		Connection.repaint();
+		return Connection;
+	}
+
+	// refresh connection line points (e.g. when dragging an icon)
+	public static ArrayList<Point> updateConnectionLine(Point p1, Point p2, int space) {
+
+		ArrayList<Point> pointlist = new ArrayList<Point>();
+
+		float XDiff = Math.abs(p1.x - p2.x);
+		float YDiff = Math.abs(p1.y - p2.y);
+
+		// infer number of points such that points fill the line without overlap at
+		// their maximum size
+		int NumXPoints = (int) (Math.sqrt(Math.pow(XDiff, 2) + Math.pow(YDiff, 2)) / (float) space);
+		int NumYPoints = (int) (Math.sqrt(Math.pow(XDiff, 2) + Math.pow(YDiff, 2)) / (float) space);
+
+		if (NumYPoints < 1) {
+			NumYPoints = NumXPoints;
+		} else if (NumXPoints < 1) {
+			NumXPoints = NumYPoints;
+		} else if (NumYPoints < 1 & NumXPoints < 1) {
+			NumXPoints = 1;
+			NumYPoints = 1;
+		}
+
+		float[] YPoints = HelperMethods.linspace(p1.getY(), p2.getY(), NumYPoints);
+		float[] XPoints = HelperMethods.linspace(p1.getX(), p2.getX(), NumXPoints);
+
+		for (int i = 0; i < YPoints.length; i++) {
+			Point pointcoords = new Point((int) XPoints[i], (int) YPoints[i]);
+			pointlist.add(pointcoords);
+		}
+		return pointlist;
+	}
+
+	// refresh connection line (e.g. when dragging an icon)
+	public static void updateConnections() {
+		if (selectedScripts.size() == 2) {
+
+			int IndScript0 = IndicesScriptsAdded.get(selectedScripts.get(0));
+			int IndScript1 = IndicesScriptsAdded.get(selectedScripts.get(1));
+
+			Script tmp1 = selectedScripts.get(1);
+			Boolean add = true;
+			int i = 0;
+			for (int tmpConn : tmp1.ConnectionFrom) {
+				if (tmpConn == IndScript0) {
+					add = false;
+					break;
+				}
+				i++;
+			}
+			if (add) {
+				tmp1.ConnectionFrom.add(IndScript0);
+			} else {
+				tmp1.ConnectionFrom.remove(i);
+			}
+
+			ScriptsAdded.put(IndScript1, tmp1);
+			reDrawWindow();
+		}
+	}
+
+	// de-serialize pipeline
+	public static void load() throws ClassNotFoundException, IOException {
+		SavePath = GUImethods.FileSelectionDialog("Select Pipeline Folder", "Pipeline", InternalPipeExtension, true,
+				true);
+
+		FileInputStream fileIn = new FileInputStream(SavePath);
+		ObjectInputStream in = new ObjectInputStream(fileIn);
+		Script[] Oin = (Script[]) in.readObject();
+
+		selectedScriptIcons.clear();
+		ScriptsAdded.clear();
+		IndicesScriptsAdded.clear();
+		in.close();
+		fileIn.close();
+
+		for (Script thisScript : Oin) {
+			ScriptsAdded.put(ScriptsAdded.size(), thisScript);
+			IndicesScriptsAdded.put(thisScript, ScriptsAdded.size() - 1);
+			selectedScriptIcons.add(new ScriptIcon(thisScript).ScriptIconPanel);
+		}
+
+	}
+
+	// serialize pipeline
+	protected static void save() throws IOException {
+		Boolean writeindeed = false;
+		File f = new File(SavePath);
+
+		// overwrite check
+		if (f.exists()) {
+			if (GUImethods.BooleanDialog("Overwrite existing file?", "File exists")) {
+				new File(SavePath).delete();
+				writeindeed = true;
+			}
+		} else {
+			writeindeed = true;
+		}
+
+		if (writeindeed) {
+			Script[] Oout = ScriptsAdded.values().toArray(new Script[ScriptsAdded.size()]);
+
+			FileOutputStream FileOutputStream = new FileOutputStream(SavePath);
+			ObjectOutputStream ScriptsPipelineFileOutputStream = new ObjectOutputStream(FileOutputStream);
+			ScriptsPipelineFileOutputStream.writeObject(Oout);
+			ScriptsPipelineFileOutputStream.close();
+			FileOutputStream.close();
+		}
+	}
+
+	/*
+	 * infer hierarchy from graph
+	 * 
+	 * the algorithm works as follows: - find all caps (scripts that are not
+	 * "connected from" any other script) - go backwards and raise the value of a
+	 * script that is connected from the cap by the maximum within the hierarchy + 1
+	 * - define those scripts as new caps and repeat until a script has empty
+	 * "connections from" (end point)
+	 * 
+	 * This way the branch levels of the leaves are found relative to the lowest
+	 * level.
+	 * 
+	 * Going backwards from here allows us to sort the scripts in the "correct"
+	 * order
+	 */
 	public static void getHierarchy() {
 		ScriptHierarchy.clear();
 
+		// get all scripts in question
 		Script[] allScripts = ScriptsAdded.values().toArray(new Script[ScriptsAdded.size()]);
 
+		// find script that are not "connected from" any other script
 		ArrayList<Integer> validCapsIndices = findCaps();
 
+		// if cap put 1 , else put zero into the hierarchy
 		for (Script tmp : allScripts) {
 
 			if (tmp.ConnectionFrom.size() < 1) {
@@ -526,6 +581,7 @@ public class Playground extends StyleSheet {
 		}
 	}
 
+	// find all scripts that are not "connected from" any other script
 	public static ArrayList<Integer> findCaps() {
 
 		Iterator<Entry<Integer, Script>> it = ScriptsAdded.entrySet().iterator();
@@ -551,7 +607,9 @@ public class Playground extends StyleSheet {
 		return validCapsIndices;
 	}
 
-	public static Script newQsubScript(Script ScriptIn) throws FileNotFoundException, ScriptinatorException {
+	// wrap a script object to be used together with Qsub (causes a change in the
+	// pipeline due to the use of a qsub job submission wrapper script)
+	public static Script newQsubScript(Script ScriptIn) throws FileNotFoundException {
 		Script Qsub = new Script();
 
 		Qsub.internal_map.put(InternalVarNameFile, QsubTemplateLocation);
@@ -559,7 +617,6 @@ public class Playground extends StyleSheet {
 		try {
 			Qsub.File2ScriptInfo();
 		} catch (NullPointerException e) {
-			throw new ScriptinatorException("Invalid Header");
 		}
 		Qsub.output_map = ScriptIn.output_map;
 		Qsub.qsub_map = ScriptIn.qsub_map;
@@ -568,7 +625,9 @@ public class Playground extends StyleSheet {
 		return Qsub;
 	}
 
-	public static void makePipeline() throws IOException, ScriptinatorException {
+	// creates runnable pipeline in form of a language specific script file, keeping
+	// the graphically defined dependencies
+	public static void makePipeline() throws IOException {
 		String path = GUImethods.FileSelectionDialog("Select Pipeline folder", "New Pipeline",
 				InternalPipeExtension + "Collection", false, false);
 
@@ -617,6 +676,7 @@ public class Playground extends StyleSheet {
 		save();
 	}
 
+	// sorts scripts that were loaded according to a defined hierarchy
 	public static ArrayList<Script> sortScriptsByHierarchy() {
 		ArrayList<Script> sortedScrips = new ArrayList<Script>();
 
@@ -639,4 +699,14 @@ public class Playground extends StyleSheet {
 
 		return sortedScrips;
 	}
+
+	// reset internal values
+	public static void clearPipeline() {
+		ScriptsAdded.clear();
+		ScriptHierarchy.clear();
+		IndicesScriptsAdded.clear();
+		selectedScriptIcons.clear();
+		selectedScripts.clear();
+	}
+
 }

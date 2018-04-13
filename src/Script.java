@@ -1,3 +1,26 @@
+
+/*  _______  _______  __   __  __   __  __   __  __   _______                                              
+ * |       ||       ||  |_|  ||  |_|  ||  | |  ||  | |       |                                             
+ * |_     _||   _   ||       ||       ||  |_|  ||__| |  _____|                                             
+ *   |   |  |  | |  ||       ||       ||       |     | |_____                                              
+ *   |   |  |  |_|  ||       ||       ||_     _|     |_____  |                                             
+ *   |   |  |       || ||_|| || ||_|| |  |   |        _____| |                                             
+ *   |___|  |_______||_|   |_||_|   |_|  |___|       |_______|                                             
+ *  _______  _______  ______    ___   _______  _______  ___   __    _  _______  _______  _______  ______   
+ * |       ||       ||    _ |  |   | |       ||       ||   | |  |  | ||   _   ||       ||       ||    _ |  
+ * |  _____||       ||   | ||  |   | |    _  ||_     _||   | |   |_| ||  |_|  ||   _   ||_     _||   | ||  
+ * | |_____ |       ||   |_||_ |   | |   |_| |  |   |  |   | |       ||       ||  | |  |  |   |  |   |_||_ 
+ * |_____  ||      _||    __  ||   | |    ___|  |   |  |   | |  _    ||       ||  |_|  |  |   |  |    __  |
+ *  _____| ||     |_ |   |  | ||   | |   |      |   |  |   | | | |   ||   _   ||       |  |   |  |   |  | |
+ * |_______||_______||___|  |_||___| |___|      |___|  |___| |_|  |__||__| |__||_______|  |___|  |___|  |_|
+ *  _______  _______  _______  _______    _______  __   __                                                 
+ * |       ||  _    ||  _    ||  _    |  |       ||  |_|  |                                                
+ * |___    || | |   || | |   || | |   |  |_     _||       |                                                
+ *  ___|   || | |   || | |   || | |   |    |   |  |       |                                                
+ * |___    || |_|   || |_|   || |_|   |    |   |  |       |                                                
+ *  ___|   ||       ||       ||       |    |   |  | ||_|| |                                                
+ * |_______||_______||_______||_______|    |___|  |_|   |_|                                                
+ */
 import java.awt.Color;
 import java.awt.Point;
 
@@ -16,10 +39,12 @@ import java.util.Random;
 
 import java.util.Map.Entry;
 
+/*
+ * main script object. All relevant information for scripts and their headers are stored here
+ */
 public class Script extends StyleSheet implements Serializable {
 
 	private static final long serialVersionUID = -3943336977167464590L;
-
 	protected String file_header = "";
 
 	// initialize content features
@@ -27,11 +52,12 @@ public class Script extends StyleSheet implements Serializable {
 			.StringValuePairs2HashMap("InputVarName" + LanguageDeclareVarUsing + LanguageDefaultVariableValue, false);
 	protected LinkedHashMap<String, String> output_map = HelperMethods
 			.StringValuePairs2HashMap("OutputVarName" + LanguageDeclareVarUsing + LanguageDefaultVariableValue, false);
-	protected LinkedHashMap<String, String> internal_map = HelperMethods
-			.StringValuePairs2HashMap(InternalVarNameLabel + LanguageDeclareVarUsing + InternalDefaultLabel + eol
-					+ InternalVarNameFile + LanguageDeclareVarUsing + System.getProperty("user.home") + filesep
-					+ InternalVarNameFile + ".sh" + eol + InternalVarNameQsub + LanguageDeclareVarUsing + "false" + eol
-					+ InternalVarNameShortDescription + LanguageDeclareVarUsing + InternalDefaultShortDescription, false);
+	protected LinkedHashMap<String, String> internal_map = HelperMethods.StringValuePairs2HashMap(
+			InternalVarNameLabel + LanguageDeclareVarUsing + InternalDefaultLabel + eol + InternalVarNameFile
+					+ LanguageDeclareVarUsing + System.getProperty("user.home") + filesep + InternalVarNameFile + ".sh"
+					+ eol + InternalVarNameQsub + LanguageDeclareVarUsing + "false" + eol
+					+ InternalVarNameShortDescription + LanguageDeclareVarUsing + InternalDefaultShortDescription,
+			false);
 
 	protected LinkedHashMap<String, String> misc_map = HelperMethods
 			.StringValuePairs2HashMap("MiscVarName" + LanguageDeclareVarUsing + LanguageDefaultVariableValue, false);
@@ -67,6 +93,7 @@ public class Script extends StyleSheet implements Serializable {
 		file_header = ScriptOperations.MakeHeaderString(this);
 	}
 
+	// update script information from file
 	protected void File2ScriptInfo() throws FileNotFoundException {
 		Script tmp = new Script();
 
@@ -95,7 +122,8 @@ public class Script extends StyleSheet implements Serializable {
 		UpdateHeaderString();
 	}
 
-	protected void load() throws FileNotFoundException, IOException, ScriptinatorException {
+	// source a language specific script
+	protected void load() throws FileNotFoundException, IOException {
 		String path = GUImethods.FileSelectionDialog("select " + LanguageScriptTypeName, LanguageScriptTypeName,
 				LanguageFileExtension, true, true);
 
@@ -103,10 +131,10 @@ public class Script extends StyleSheet implements Serializable {
 		try {
 			File2ScriptInfo();
 		} catch (NullPointerException e) {
-			throw new ScriptinatorException("Invalid Header");
 		}
 	}
 
+	// write a language specific script according to the stored information
 	protected void save() throws IOException {
 		Boolean writeindeed = false;
 		String newFile = LanguageEnvironment + eol + eol + file_header + eol + code_map.get("") + eol;
@@ -129,6 +157,7 @@ public class Script extends StyleSheet implements Serializable {
 		}
 	}
 
+	// execute script and write output to command line
 	protected String runScript() throws IOException {
 
 		File tmpFile = File.createTempFile("tmp", "." + LanguageFileExtension,
@@ -149,6 +178,8 @@ public class Script extends StyleSheet implements Serializable {
 		return outstring;
 	}
 
+	// the following methods are used by the properties GUI to modify the number of
+	// variables in a given section
 	public void makeInputVar() {
 		input_map.put("NewInputVar" + input_map.size(), "none");
 	}
@@ -188,10 +219,12 @@ public class Script extends StyleSheet implements Serializable {
 		}
 	}
 
+	// set location to center of (graphical) object
 	public void setPos(Point p) {
 		Location = new Point(p.x - GUIscriptIconSize / 2, p.y - GUIscriptIconSize / 2);
 	}
 
+	// get original position
 	public Point getPos() {
 		return new Point(Location.x + GUIscriptIconSize / 2, Location.y + GUIscriptIconSize / 2);
 	}

@@ -1,40 +1,41 @@
 
-/*   _______                              _             
- *  |__   __|                            ( )            
- *     | | ___  _ __ ___  _ __ ___  _   _|/ ___         
- *     | |/ _ \| '_ ` _ \| '_ ` _ \| | | | / __|        
- *     | | (_) | | | | | | | | | | | |_| | \__ \        
- *     |_|\___/|_| |_| |_|_| |_| |_|\__, | |___/        
- *   ____            _     _         __/ |              
- *  |  _ \          | |   (_)       |___/ |             
- *  | |_) | __ _ ___| |__  _ _ __   __ _| |_ ___  _ __  
- *  |  _ < / _` / __| '_ \| | '_ \ / _` | __/ _ \| '__| 
- *  | |_) | (_| \__ \ | | | | | | | (_| | || (_) | |    
- *  |____/ \__,_|___/_| |_|_|_| |_|\__,_|\__\___/|_|    
- *   ____   ___   ___   ___    _______ __  __           
- *  |___ \ / _ \ / _ \ / _ \  |__   __|  \/  |          
- *    __) | | | | | | | | | |    | |  | \  / |          
- *   |__ <| | | | | | | | | |    | |  | |\/| |          
- *   ___) | |_| | |_| | |_| |    | |  | |  | |          
- *  |____/ \___/ \___/ \___/     |_|  |_|  |_|                  
+/*  _______  _______  __   __  __   __  __   __  __   _______                                              
+ * |       ||       ||  |_|  ||  |_|  ||  | |  ||  | |       |                                             
+ * |_     _||   _   ||       ||       ||  |_|  ||__| |  _____|                                             
+ *   |   |  |  | |  ||       ||       ||       |     | |_____                                              
+ *   |   |  |  |_|  ||       ||       ||_     _|     |_____  |                                             
+ *   |   |  |       || ||_|| || ||_|| |  |   |        _____| |                                             
+ *   |___|  |_______||_|   |_||_|   |_|  |___|       |_______|                                             
+ *  _______  _______  ______    ___   _______  _______  ___   __    _  _______  _______  _______  ______   
+ * |       ||       ||    _ |  |   | |       ||       ||   | |  |  | ||   _   ||       ||       ||    _ |  
+ * |  _____||       ||   | ||  |   | |    _  ||_     _||   | |   |_| ||  |_|  ||   _   ||_     _||   | ||  
+ * | |_____ |       ||   |_||_ |   | |   |_| |  |   |  |   | |       ||       ||  | |  |  |   |  |   |_||_ 
+ * |_____  ||      _||    __  ||   | |    ___|  |   |  |   | |  _    ||       ||  |_|  |  |   |  |    __  |
+ *  _____| ||     |_ |   |  | ||   | |   |      |   |  |   | | | |   ||   _   ||       |  |   |  |   |  | |
+ * |_______||_______||___|  |_||___| |___|      |___|  |___| |_|  |__||__| |__||_______|  |___|  |___|  |_|
+ *  _______  _______  _______  _______    _______  __   __                                                 
+ * |       ||  _    ||  _    ||  _    |  |       ||  |_|  |                                                
+ * |___    || | |   || | |   || | |   |  |_     _||       |                                                
+ *  ___|   || | |   || | |   || | |   |    |   |  |       |                                                
+ * |___    || |_|   || |_|   || |_|   |    |   |  |       |                                                
+ *  ___|   ||       ||       ||       |    |   |  | ||_|| |                                                
+ * |_______||_______||_______||_______|    |___|  |_|   |_|                                                
  */
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Toolkit;
 
 // initialize style features
-// Those can be chosen freely. Definitions should apply to all (ba)sh files.
+// Those can be chosen freely. Definitions should apply to all language specific script files.
 public class StyleSheet {
 
 	// Script dependent file and line separators
 	protected static String eol = System.getProperty("line.separator"); // End-Of-Line indication
 	protected static String eolDelimiter = "\\s*[" + eol + "]\\s*"; // Delimiter for newline
-	protected static String filesep = System.getProperty("file.separator"); // do not use system rather than runcommand
-	protected static Font DefaultGUIFont = new Font("Helvetica", Font.PLAIN, 12);
-	protected static Font DefaultCodeFont = new Font("Futura", Font.PLAIN, 12);
-	protected static String logfile = System.getProperty("user.dir") + System.getProperty("file.separator")
-			+ "TestCoverage.log";
+	protected static String filesep = System.getProperty("file.separator"); // default system specific file separator
+	protected static Font DefaultGUIFont = new Font("Helvetica", Font.PLAIN, 12); // default font for GUI elements
+	protected static Font DefaultCodeFont = new Font("Futura", Font.PLAIN, 12); // default font for displayed code
 
-	// specific
 	// Definition of basic Language aspects used for header readout
 	protected static String LanguageEnvironment = "#!" + filesep + "bin" + filesep + "bash"; // first line of every
 																								// executable
@@ -46,18 +47,19 @@ public class StyleSheet {
 	protected static String LanguageScriptTypeName = "BashScript";
 	protected static String LanguageCommentPrefix = "#"; // String that is used to comment a script (e.g. # for bash
 															// scripts)
-	protected static String LanguageDefaultVariableValue = "none";
-	protected static String LanguageExitCommand="exit 0";
+	protected static String LanguageDefaultVariableValue = "none"; // value of a new unused variable
+	protected static String LanguageExitCommand = "exit 0"; // exit command used by the language to exit the programm
 	// section
 
 	// Name of Variables for the currently sourced file and the qsub-indication
-	protected static String InternalVarNameFile = "file"; // use this to indicate internal file name
+	protected static String InternalVarNameFile = "file"; // use this to indicate absolute path
 	protected static String InternalVarNameQsub = "useqsub"; // use this to indicate internal variable name for qsub use
-	protected static String InternalVarNameLabel = "label";
-	protected static String InternalDefaultLabel = "Unknown file";
-	protected static String InternalVarNameShortDescription = "shortLabel";
-	protected static String InternalDefaultShortDescription = "uKn";
-	protected static String InternalPipeExtension = "pipe";
+	protected static String InternalVarNameLabel = "label"; // used to indicate internal label
+	protected static String InternalDefaultLabel = "Unknown file"; // default internal label
+	protected static String InternalVarNameShortDescription = "shortLabel"; // used to indicate internal short
+																			// description displayed on script icons
+	protected static String InternalDefaultShortDescription = "uKn"; // default short description
+	protected static String InternalPipeExtension = "pipe"; // extension used to (de-) serialize pipelines
 
 	// Strings to identify start, end and sections of the header
 	protected static String IndStringBeginHeader = "BEGIN HEADER"; // use this to indicate the start of the header
@@ -87,7 +89,7 @@ public class StyleSheet {
 	protected static String IndStringOutput = "Output"; // String that must be contained to indicate Output section
 	protected static String IndStringQsub = "Qsub"; // String that must be contained to indicate qsub section
 	protected static String IndStringMisc = "Misc"; // String that must be contained to indicate misc section
-	protected static String IndStringCode = "Code"; // String that must be contained to indicate misc section
+	protected static String IndStringCode = "Code"; // String that must be contained to indicate code section
 
 	// added to Key Strings for header to provide additional information
 	protected static String AddToIndStringFileName = " information"; // use this as additional header string for the
@@ -108,6 +110,9 @@ public class StyleSheet {
 	 * GUI SETTINGS
 	 */
 
+	// GUI Script Icon font
+	protected static Font GUIScriptIconFont = new Font("Futura", Font.BOLD, 16);
+
 	// Background color of main window
 	protected static Color GUIbackGroundColor = Color.LIGHT_GRAY;
 
@@ -126,10 +131,11 @@ public class StyleSheet {
 			new Color(253, 143, 197), new Color(237, 98, 167), new Color(201, 47, 123), new Color(151, 30, 94) };
 
 	// Thickness of node connection lines in px
-	protected static int GUIConnectionIndicatorSize = 10;
+	protected static int GUIConnectionIndicatorSize = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()
+			/ 80;
 
 	// Size of node connection icon in px
-	protected static int GUIscriptIconSize = 50;
+	protected static int GUIscriptIconSize = (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 17.5);
 	// Size of Qsub Ring for node connection icon in px
 	protected static int GUIscriptIconQsubRingSize = 4;
 
@@ -140,11 +146,16 @@ public class StyleSheet {
 	protected static Color GUIscriptIconQsubRingFrameColor = Color.BLACK;
 	protected static Color GUIscriptIconQsubRingColor = Color.WHITE;
 
+	// ratio of how much is occupied by the window
 	protected static double MainWindowOccupiesThisMuchOfMyScreen = 0.8;
 
-	protected static int MainWindowButtonSize = 40;
-	
-	protected static String QsubTemplateLocation=System.getProperty("user.dir")+filesep+"templates"+filesep+"RunOnQsubTemplate.sh";
-	
-	protected static String QsubRunScriptVarName="ScriptToRun";
+	// size of main buttons in pixel
+	protected static int MainWindowButtonSize = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 20;
+
+	// location of qsub submission template file
+	protected static String QsubTemplateLocation = System.getProperty("user.dir") + filesep + "templates" + filesep
+			+ "RunOnQsubTemplate.sh";
+
+	// variable name indicating the path of the script to be wrapped
+	protected static String QsubRunScriptVarName = "ScriptToRun";
 }
