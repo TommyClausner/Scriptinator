@@ -28,7 +28,7 @@ When starting up Tommy's Scriptinator 3000 TM the main playground shows up with 
 A new script can be created by double clicking somewhere on the playground. A round icon having a random colour will appear at the respective location. This Icon represents your script. At the moment of creation it will be a default "unknown" script. Double clicking the script lists all features of the script and allows for modification (will be explained later). Further the script icon can be dragged to any location desired.
 
 ### connection two scripts
-Two scripts can be connected by single clicking a script providing the *from* connection and afterwards single clicking the script to which the first script is connected *to*. When repeating the exact same procedure the connection is removed. Internally each script stores all connections it has *from* other scripts (rather than *to*).
+Two scripts can be connected by single clicking a script providing the *from* connection and afterwards single clicking the script to which the first script is connected *to*. When repeating the exact same procedure the connection is removed. Internally each script stores all connections it has *from* other scripts (rather than *to*). Outgoing connections are symbolized by the thicker end of the connection line whereas the opposite is true for incoming connections. In other words the connection goes from thick to thin.
 
 ### Style Sheet
 The default Scriptinator style sheet was created for being used with *Bash* scripts. However by creating the respective style sheet for a different language would make the program compatible to that as well. All functions are set up in a general way such that according to the style sheet the environment is built.
