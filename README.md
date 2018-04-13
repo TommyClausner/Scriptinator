@@ -96,4 +96,4 @@ After that all scripts that were displayed on the playground will be equipped wi
 ### License:
 -------
 
-all contents within this repository are using the standard [GPL license](http://opensource.org/licenses/lgpl-3.0.html).
+all contents within this repository are using the standard [GPL-3.0 license](http://opensource.org/licenses/GPL-3.0).
