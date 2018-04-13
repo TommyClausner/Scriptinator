@@ -3,14 +3,14 @@
 author: Tommy Clausner
 
 Tommy’s Scriptinator 3000 TM aims to provide an interface between code line programming 
-and grafical user interfaces. This can become especially handy in science, where users in 
+and graphical user interfaces. This can become especially handy in science, where users in 
 general are less skilled in using multiple programming languages. E.g. students entering 
-the field are often confronted with analysis scripts that are stiched together by another 
+the field are often confronted with analysis scripts that are stitched together by another 
 person and spend often a significant amount of time figuring out the workflow. This is 
 where Tommy’s Scriptinator 3000 TM slips in.
 
-This project served as the final project for "Introduction to Java for Bioinformatics" 
-summer semester 2018 Radound University Nijmegen.
+This project served as the final project for "Introduction to Java for Bioinformatics", 
+summer semester 2018 Radboud University Nijmegen.
 
 Teacher: Arthur Pistorius
 

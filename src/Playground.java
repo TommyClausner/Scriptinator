@@ -321,7 +321,7 @@ public class Playground extends StyleSheet {
 		helpbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Desktop.getDesktop().open(new File("README.pdf"));
+					Desktop.getDesktop().open(new File(System.getProperty("user.dir") + filesep + "README.pdf"));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
