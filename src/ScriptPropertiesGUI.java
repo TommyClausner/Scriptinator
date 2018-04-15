@@ -200,22 +200,6 @@ public class ScriptPropertiesGUI extends StyleSheet {
 
 		mainbuttonpanel.add(overwritebtn, c);
 
-		// executes the script “as is” and outputs to command line
-		c.gridy++;
-		JButton runbtn = GUImethods.makeButton("Run Script");
-		runbtn.putClientProperty("JComponent.sizeVariant", "regular");
-		runbtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					collectPanelInfo();
-					System.out.println(LocalScript.runScript());
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		mainbuttonpanel.add(runbtn, c);
-
 		// closes the Properties window and reverts the state to it’s original state
 		c.gridy++;
 		JButton cancelbtn = GUImethods.makeButton("Cancel");
@@ -227,6 +211,22 @@ public class ScriptPropertiesGUI extends StyleSheet {
 			}
 		});
 		mainbuttonpanel.add(cancelbtn, c);
+
+		// closes the Properties window and deletes this Script from pipeline
+		c.gridy++;
+		JButton deletebtn = GUImethods.makeButton("Delete Script");
+		deletebtn.putClientProperty("JComponent.sizeVariant", "regular");
+		deletebtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (GUImethods.BooleanDialog("Do you really want to delete this script?", "Delete Script",
+						skipDeleteScriptDialog)) {
+					LocalScript = LocalScriptOld;
+					LocalScript.isdeleted = true;
+					PropertiesDialog.dispatchEvent(new WindowEvent(PropertiesDialog, WindowEvent.WINDOW_CLOSING));
+				}
+			}
+		});
+		mainbuttonpanel.add(deletebtn, c);
 
 		// Buttons for modifying number of variables for "Input", "Output" and "Misc"
 		c.gridy = 1;

@@ -59,11 +59,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class GUImethods extends StyleSheet {
 
 	// simple dialog to ask whether the respective choice was correct
-	public static Boolean BooleanDialog(String decisionText, String TitleText) {
-		int dialogButton = JOptionPane.YES_NO_OPTION;
-		int dialogResult = JOptionPane.showConfirmDialog(null, decisionText, TitleText, dialogButton,
-				JOptionPane.QUESTION_MESSAGE, new ImageIcon());
-		return dialogResult == JOptionPane.YES_OPTION;
+	public static Boolean BooleanDialog(String decisionText, String TitleText, Boolean skip) {
+		if (skip) { // defined in StyleSheet as default behavior whether to skip and confirm the
+					// dialog. This is meant for convenience according to user habits.
+			return true;
+		} else {
+			int dialogButton = JOptionPane.YES_NO_OPTION;
+			int dialogResult = JOptionPane.showConfirmDialog(null, decisionText, TitleText, dialogButton,
+					JOptionPane.QUESTION_MESSAGE, new ImageIcon());
+			return dialogResult == JOptionPane.YES_OPTION;
+		}
 	}
 
 	// centers a frame to the screen

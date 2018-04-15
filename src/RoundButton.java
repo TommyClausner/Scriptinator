@@ -52,7 +52,7 @@ public class RoundButton extends JButton {
 
 	protected void paintBorder(Graphics g) {
 		g.setColor(Color.white);
-		g.drawOval(0, 0, getSize().width-1, getSize().height - 1);
+		g.drawOval(0, 0, getSize().width - 1, getSize().height - 1);
 	}
 
 	// Hit detection.

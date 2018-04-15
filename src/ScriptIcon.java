@@ -154,6 +154,7 @@ public class ScriptIcon extends StyleSheet {
 
 				isselected = false;
 				Playground.selectedScripts.clear();
+				Playground.updateScripts();
 				event.consume();
 				// if single click, select item for being connected
 			} else if (event.getClickCount() == 1 && !event.isConsumed() & !dragging) {
@@ -161,7 +162,7 @@ public class ScriptIcon extends StyleSheet {
 				isselected = !isselected;
 				if (isselected) {
 					isselected = false;
-					
+
 					// just to make sure not more than 2 scripts can be selected
 					if (Playground.selectedScripts.size() >= 2) {
 						Playground.selectedScripts.clear();

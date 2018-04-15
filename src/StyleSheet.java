@@ -157,4 +157,11 @@ public class StyleSheet {
 
 	// variable name indicating the path of the script to be wrapped
 	protected static String QsubRunScriptVarName = "ScriptToRun";
+
+	// skip boolean dialogs
+	protected static Boolean skipClearPipelineDialog = false;
+	protected static Boolean skipDeleteScriptDialog = true;
+	protected static Boolean skipOverwriteSaveScriptDialog = true;
+	protected static Boolean skipOverwriteSavePipelineDialog = false;
+	protected static Boolean skipCloseWindowDialog = false;
 }

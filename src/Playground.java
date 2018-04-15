@@ -84,7 +84,7 @@ public class Playground extends StyleSheet {
 
 	protected static ArrayList<Script> selectedScripts = new ArrayList<Script>();
 
-	protected static ArrayList<JPanel> selectedScriptIcons = new ArrayList<JPanel>();
+	protected static ArrayList<ScriptIcon> selectedScriptIcons = new ArrayList<ScriptIcon>();
 	protected static LinkedHashMap<Script, Integer> ScriptHierarchy = new LinkedHashMap<Script, Integer>();
 	protected static LinkedHashMap<Integer, Script> ScriptsAdded = new LinkedHashMap<Integer, Script>();
 	protected static LinkedHashMap<Script, Integer> IndicesScriptsAdded = new LinkedHashMap<Script, Integer>();
@@ -150,8 +150,8 @@ public class Playground extends StyleSheet {
 		// make new script icons
 		for (int n = 0; n < ScriptsAdded.size(); n++) {
 			thisScript = ScriptsAdded.get(n);
-			selectedScriptIcons.get(n).setLocation(thisScript.Location);
-			ConnectorsPanel.add(selectedScriptIcons.get(n));
+			selectedScriptIcons.get(n).ScriptIconPanel.setLocation(thisScript.Location);
+			ConnectorsPanel.add(selectedScriptIcons.get(n).ScriptIconPanel);
 		}
 
 		// make new connection lines
@@ -213,7 +213,7 @@ public class Playground extends StyleSheet {
 				newScript.setPos(currLocation);
 				ScriptsAdded.put(ScriptsAdded.size(), newScript);
 				IndicesScriptsAdded.put(newScript, ScriptsAdded.size() - 1);
-				selectedScriptIcons.add(new ScriptIcon(newScript).ScriptIconPanel);
+				selectedScriptIcons.add(new ScriptIcon(newScript));
 				reDrawWindow();
 				event.consume();
 			} else {
@@ -245,7 +245,8 @@ public class Playground extends StyleSheet {
 		clearbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		clearbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (GUImethods.BooleanDialog("Do you really want to clear the pipeline?", "Clear Pipeline")) {
+				if (GUImethods.BooleanDialog("Do you really want to clear the pipeline?", "Clear Pipeline",
+						skipClearPipelineDialog)) {
 					clearPipeline();
 					reDrawWindow();
 				}
@@ -293,7 +294,7 @@ public class Playground extends StyleSheet {
 		pipebtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		pipebtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				getHierarchy();
+				updateScripts();
 				try {
 					makePipeline();
 				} catch (IOException e1) {
@@ -335,7 +336,10 @@ public class Playground extends StyleSheet {
 		exitbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		exitbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				if (GUImethods.BooleanDialog("Do you really want to close the application?", "Close Application",
+						skipCloseWindowDialog)) {
+					System.exit(0);
+				}
 			}
 		});
 		ControlPanel.add(exitbtn);
@@ -416,7 +420,8 @@ public class Playground extends StyleSheet {
 			NumYPoints = NumXPoints;
 		} else if (NumXPoints < 1) {
 			NumXPoints = NumYPoints;
-		} else if (NumYPoints < 1 & NumXPoints < 1) {
+		}
+		if (NumYPoints < 1 & NumXPoints < 1) {
 			NumXPoints = 1;
 			NumYPoints = 1;
 		}
@@ -477,7 +482,7 @@ public class Playground extends StyleSheet {
 		for (Script thisScript : Oin) {
 			ScriptsAdded.put(ScriptsAdded.size(), thisScript);
 			IndicesScriptsAdded.put(thisScript, ScriptsAdded.size() - 1);
-			selectedScriptIcons.add(new ScriptIcon(thisScript).ScriptIconPanel);
+			selectedScriptIcons.add(new ScriptIcon(thisScript));
 		}
 
 	}
@@ -489,7 +494,7 @@ public class Playground extends StyleSheet {
 
 		// overwrite check
 		if (f.exists()) {
-			if (GUImethods.BooleanDialog("Overwrite existing file?", "File exists")) {
+			if (GUImethods.BooleanDialog("Overwrite existing file?", "File exists", skipOverwriteSavePipelineDialog)) {
 				new File(SavePath).delete();
 				writeindeed = true;
 			}
@@ -707,6 +712,90 @@ public class Playground extends StyleSheet {
 		IndicesScriptsAdded.clear();
 		selectedScriptIcons.clear();
 		selectedScripts.clear();
+	}
+
+	/*
+	 * update Script and connection dependencies
+	 * 
+	 * Note: this method is rather messy, due to late implementation (yes, I
+	 * literally forgot, that people might want to delete Scripts as well ;))
+	 * Nevertheless it does the job, but be aware that when reading this part you
+	 * will come across a lot of fixes, that are due to the fact that I didn't want
+	 * to restructure everything (again).
+	 */
+	public static void updateScripts() {
+
+		// make new sets
+		LinkedHashMap<Integer, Script> refreshScriptsAdded = new LinkedHashMap<Integer, Script>();
+		LinkedHashMap<Script, Integer> refreshIndicesScriptsAdded = new LinkedHashMap<Script, Integer>();
+		ArrayList<ScriptIcon> refreshselectedScriptIcons = new ArrayList<ScriptIcon>();
+
+		ArrayList<Integer> deletedScripts = new ArrayList<Integer>();
+
+		// find indices of scripts that need to be removed
+		for (ScriptIcon thisIcon : selectedScriptIcons) {
+			Script thisScript = thisIcon.LocalScript;
+
+			// reset location of every script to the location of the script icon (can change
+			// due to dragging)
+			ScriptsAdded.get(IndicesScriptsAdded.get(thisScript)).Location = thisIcon.ScriptIconPanel.getLocation();
+
+			// make list of deleted script indices
+			if (thisScript.isdeleted) {
+				deletedScripts.add(IndicesScriptsAdded.get(thisScript));
+			}
+		}
+
+		// update connection entries of all scripts
+		for (ScriptIcon thisIcon : selectedScriptIcons) {
+			Script thisScript = thisIcon.LocalScript;
+
+			for (Integer deleteThisConnection : deletedScripts) {
+
+				// if a connection is part of the set of scripts that need to be deleted, than
+				// remove this connection
+				if (ScriptsAdded.get(IndicesScriptsAdded.get(thisScript)).ConnectionFrom
+						.contains(deleteThisConnection)) {
+					ScriptsAdded.get(IndicesScriptsAdded.get(thisScript)).ConnectionFrom
+							.remove(ScriptsAdded.get(IndicesScriptsAdded.get(thisScript)).ConnectionFrom
+									.indexOf(deleteThisConnection));
+
+				}
+				// update connection entries of script. Iterate through every connection
+				// and reduce the value of the connection index that is bigger than the selected
+				// by 1
+				for (Integer connection = 0; connection < ScriptsAdded
+						.get(IndicesScriptsAdded.get(thisScript)).ConnectionFrom.size(); connection++) {
+					if (ScriptsAdded.get(IndicesScriptsAdded.get(thisScript)).ConnectionFrom
+							.get(connection) >= deleteThisConnection) {
+						ScriptsAdded.get(IndicesScriptsAdded.get(thisScript)).ConnectionFrom.set(connection,
+								ScriptsAdded.get(IndicesScriptsAdded.get(thisScript)).ConnectionFrom.get(connection)
+										- 1);
+					}
+				}
+			}
+		}
+
+		// refresh maps
+		for (ScriptIcon thisIcon : selectedScriptIcons) {
+			Script thisScript = thisIcon.LocalScript;
+
+			if (!thisScript.isdeleted) {
+
+				refreshScriptsAdded.put(refreshScriptsAdded.size(),
+						ScriptsAdded.get(IndicesScriptsAdded.get(thisScript)));
+				refreshIndicesScriptsAdded.put(ScriptsAdded.get(IndicesScriptsAdded.get(thisScript)),
+						(refreshScriptsAdded.size() - 1));
+				refreshselectedScriptIcons.add(new ScriptIcon(ScriptsAdded.get(IndicesScriptsAdded.get(thisScript))));
+			}
+		}
+
+		clearPipeline();
+		ScriptsAdded = refreshScriptsAdded;
+		IndicesScriptsAdded = refreshIndicesScriptsAdded;
+		selectedScriptIcons = refreshselectedScriptIcons;
+		getHierarchy();
+		reDrawWindow();
 	}
 
 }

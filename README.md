@@ -5,6 +5,8 @@ Tommy's Scriptinator 3000 TM aims to provide an interface between code line prog
 
 Scripts can be prepared such that main I/O variables and different additional parameters can be defined in a classical graphical user interface (GUI). Furthermore those scripts can be daisy chained to create analysis pipelines.
 
+Once a pipeline was created it can be shared with anyone using Tommy's Scriptinator 3000 TM. Thus, making it the ideal solution for sharing scripts and communicating dependencies.
+
 ## main functions
 When starting up Tommy's Scriptinator 3000 TM the main playground shows up with the main control buttons located at the top centre of the panel.
 
@@ -32,6 +34,8 @@ Two scripts can be connected by single clicking a script providing the *from* co
 
 ### Style Sheet
 The default Scriptinator style sheet was created for being used with *Bash* scripts. However by creating the respective style sheet for a different language would make the program compatible to that as well. All functions are set up in a general way such that according to the style sheet the environment is built.
+
+Note that the StyleSheet includes parameters for skipping confirmation dialogs. Make sure that this settings are defined in accordance with the desired behavior.
 
 ### modifying script properties
 If a script was created, it accepts double clicks to expose the properties window. Depending on how the style sheet was set up, the default or template script will be displayed.
@@ -75,9 +79,9 @@ Within the right column the control buttons are located.
 
 - *Write to file* creates a runnable script in the respective language, including the header information wrapped in language specific comments.
 
-- *Run Script* executes the script "as is" and outputs to command line
-
 - *Cancel* closes the Properties window and reverts the state to it's original state
+
+- *Delete Script* closes the Properties window and deletes Script node
 
 **Code**
 All code elements that were part of the sourced script, but not of the header are displayed here. Changes for instance in variable naming in the header section could be applied directly to the code in here.

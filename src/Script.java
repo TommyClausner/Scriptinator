@@ -24,13 +24,11 @@
 import java.awt.Color;
 import java.awt.Point;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -69,6 +67,8 @@ public class Script extends StyleSheet implements Serializable {
 			"jobtype" + eol + "batch" + eol + "walltime" + eol + "\"24:00:00\"" + eol + "memory" + eol + "32gb", false);
 
 	protected ArrayList<Integer> ConnectionFrom = new ArrayList<Integer>();
+
+	protected Boolean isdeleted = false;
 
 	// GUI related properties
 	protected Random rn = new Random();
@@ -140,7 +140,7 @@ public class Script extends StyleSheet implements Serializable {
 		String newFile = LanguageEnvironment + eol + eol + file_header + eol + code_map.get("") + eol;
 		File f = new File(internal_map.get(InternalVarNameFile));
 		if (f.exists()) {
-			if (GUImethods.BooleanDialog("Overwrite existing file?", "File exists")) {
+			if (GUImethods.BooleanDialog("Overwrite existing file?", "File exists", skipOverwriteSaveScriptDialog)) {
 				writeindeed = true;
 			}
 		} else {
@@ -155,27 +155,6 @@ public class Script extends StyleSheet implements Serializable {
 			out.write(newFile);
 			out.close();
 		}
-	}
-
-	// execute script and write output to command line
-	protected String runScript() throws IOException {
-
-		File tmpFile = File.createTempFile("tmp", "." + LanguageFileExtension,
-				new File(System.getProperty("user.dir")));
-
-		BufferedWriter out = new BufferedWriter(new FileWriter(tmpFile.getAbsoluteFile()));
-		out.write(LanguageEnvironment + eol + HelperMethods.stripCommentedLines(file_header + eol + code_map.get("")));
-		out.close();
-
-		Process proc = Runtime.getRuntime().exec(LanguageRuncommand + " " + tmpFile.getAbsoluteFile());
-		BufferedReader read = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-		String outstring = "";
-		while (read.ready()) {
-			outstring += read.readLine();
-		}
-		proc.destroy();
-		tmpFile.delete();
-		return outstring;
 	}
 
 	// the following methods are used by the properties GUI to modify the number of
