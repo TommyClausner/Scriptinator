@@ -66,8 +66,10 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.OverlayLayout;
+import javax.swing.ScrollPaneConstants;
 
 /*
  * Main part of the program: provides main GUI panel and creates pipeline
@@ -356,22 +358,41 @@ public class Playground extends StyleSheet {
 
 		File file = null;
 
-		file = new File(System.getProperty("user.dir") + filesep + "About.txt");
-
 		FileInputStream fis;
+		file = new File(System.getProperty("user.dir") + filesep + "About.txt");
+		String HelpInfoText = "";
 		try {
 			fis = new FileInputStream(file);
 			byte[] data = new byte[(int) file.length()];
 			fis.read(data);
 			fis.close();
-			String HelpInfoText = new String(data, "UTF-8");
+			HelpInfoText += new String(data, "UTF-8") + eol + eol + "This work is published under the:" + eol + eol
+					+ eol;
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		file = new File(System.getProperty("user.dir") + filesep + "LICENSE");
+
+		try {
+			fis = new FileInputStream(file);
+			byte[] data = new byte[(int) file.length()];
+			fis.read(data);
+			fis.close();
+			HelpInfoText += new String(data, "UTF-8");
+
+			// scrollers to be added
 
 			JTextArea AboutInfo = new JTextArea(HelpInfoText);
 			AboutInfo.setHighlighter(null);
 			AboutInfo.setEditable(false);
 			JDialog AboutFrame = GUImethods.makeFrame();
 
-			AboutFrame.add(AboutInfo);
+			JScrollPane scroller = new JScrollPane(AboutInfo);
+			scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+			AboutFrame.add(scroller);
 			AboutFrame.pack();
 			AboutFrame.revalidate();
 			AboutFrame.repaint();
