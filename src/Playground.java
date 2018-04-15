@@ -518,6 +518,10 @@ public class Playground extends StyleSheet {
 			if (GUImethods.BooleanDialog("Overwrite existing file?", "File exists", skipOverwriteSavePipelineDialog)) {
 				new File(SavePath).delete();
 				writeindeed = true;
+			} else {
+				SavePath = GUImethods.FileSelectionDialog("select Pipeline", "Pipeline", InternalPipeExtension, false,
+						true);
+				writeindeed = true;
 			}
 		} else {
 			writeindeed = true;

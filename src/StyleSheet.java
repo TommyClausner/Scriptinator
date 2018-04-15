@@ -161,7 +161,7 @@ public class StyleSheet {
 	// skip boolean dialogs
 	protected static Boolean skipClearPipelineDialog = false;
 	protected static Boolean skipDeleteScriptDialog = true;
-	protected static Boolean skipOverwriteSaveScriptDialog = true;
+	protected static Boolean skipOverwriteSaveScriptDialog = false;
 	protected static Boolean skipOverwriteSavePipelineDialog = false;
 	protected static Boolean skipCloseWindowDialog = false;
 }

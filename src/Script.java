@@ -142,6 +142,10 @@ public class Script extends StyleSheet implements Serializable {
 		if (f.exists()) {
 			if (GUImethods.BooleanDialog("Overwrite existing file?", "File exists", skipOverwriteSaveScriptDialog)) {
 				writeindeed = true;
+			} else {
+				internal_map.put(InternalVarNameFile, GUImethods.FileSelectionDialog("select " + LanguageScriptTypeName,
+						LanguageScriptTypeName, LanguageFileExtension, false, true));
+				writeindeed = true;
 			}
 		} else {
 			internal_map.put(InternalVarNameFile, GUImethods.FileSelectionDialog("select " + LanguageScriptTypeName,

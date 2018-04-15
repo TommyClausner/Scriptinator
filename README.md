@@ -98,7 +98,9 @@ After that all scripts that were displayed on the playground will be equipped wi
 License:
 -------
 
-all contents within this repository is provided under the [GPL-3.0 license](http://opensource.org/licenses/GPL-3.0).
+All contents within this repository are distributed under the [GPL-3.0 license](http://opensource.org/licenses/GPL-3.0).
+
+Copyright (C) 2018, Tommy Clausner, Donders Institute for Brain, Cognition and Behaviour, Radboud University Nijmegen, The Netherlands DCCN
 
 -------
 remark for those who need it:
