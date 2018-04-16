@@ -7,7 +7,7 @@
 # General information #
 # file=none
 # useqsub=false
-# label=WorldScript
+# label=World
 # shortLabel=Wrld
 
 ### Script ###

@@ -7,7 +7,7 @@
 # General information #
 # file=none
 # useqsub=false
-# label=HelloScript
+# label=Hello
 # shortLabel=HeLa
 
 ### Script ###

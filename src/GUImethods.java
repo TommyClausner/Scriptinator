@@ -103,6 +103,7 @@ public class GUImethods extends StyleSheet {
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			fc.setFileFilter(filter);
 		} else {
+			fc.setAcceptAllFileFilterUsed(false);
 			fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		}

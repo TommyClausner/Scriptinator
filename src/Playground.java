@@ -49,12 +49,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -65,6 +61,7 @@ import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -658,8 +655,14 @@ public class Playground extends StyleSheet {
 	// creates runnable pipeline in form of a language specific script file, keeping
 	// the graphically defined dependencies
 	public static void makePipeline() throws IOException {
-		String path = GUImethods.FileSelectionDialog("Select Pipeline folder", "New Pipeline",
-				InternalPipeExtension + "Collection", false, false);
+		String path = GUImethods.FileSelectionDialog("Select Pipeline folder", "", "", true, false);
+
+		String filename_ = (String) JOptionPane.showInputDialog(GUImethods.makeFrame(), "Choose Pipeline Name",
+				"Pipeline Name", JOptionPane.PLAIN_MESSAGE, null, null, null);
+
+		new File(path + filesep + filename_).mkdirs();
+
+		path += (filesep + filename_);
 
 		String PipelineCode = LanguageEnvironment + eol;
 
@@ -694,9 +697,7 @@ public class Playground extends StyleSheet {
 
 		}
 		PipelineCode += (LanguageExitCommand + eol);
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		Date date = new Date();
-		String filename_ = dateFormat.format(date).toString().replaceAll("/|:|\\s+", "-");
+
 		BufferedWriter out = new BufferedWriter(
 				new FileWriter(path + filesep + filename_ + "." + LanguageFileExtension));
 		out.write(PipelineCode);
