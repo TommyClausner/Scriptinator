@@ -96,7 +96,7 @@ public class HelperMethods extends StyleSheet {
 		if (iscode) {
 
 			StringBuilder sb = new StringBuilder(StringValuePairs);
-			if (StringValuePairs.indexOf(LanguageDeclareVarUsing) >= 0) {
+			if (StringValuePairs.indexOf(LanguageDeclareVarUsing) == 0) {
 				sb.deleteCharAt(StringValuePairs.indexOf(LanguageDeclareVarUsing));// find Name - Value separator
 			}
 
