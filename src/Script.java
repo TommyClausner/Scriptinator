@@ -137,7 +137,11 @@ public class Script extends StyleSheet implements Serializable {
 	// write a language specific script according to the stored information
 	protected void save() throws IOException {
 		Boolean writeindeed = false;
-		String newFile = LanguageEnvironment + eol + eol + file_header + eol + code_map.get("") + eol;
+
+		StringBuilder code = new StringBuilder(code_map.get(""));
+		code.deleteCharAt(0);
+
+		String newFile = LanguageEnvironment + eol + eol + file_header + eol + code.toString() + eol;
 		File f = new File(internal_map.get(InternalVarNameFile));
 		if (f.exists()) {
 			if (GUImethods.BooleanDialog("Overwrite existing file?", "File exists", skipOverwriteSaveScriptDialog)) {

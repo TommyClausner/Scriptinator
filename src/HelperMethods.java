@@ -95,9 +95,9 @@ public class HelperMethods extends StyleSheet {
 		// retrieved differently (it has no Name and declaration String)
 		if (iscode) {
 
-			StringBuilder sb = new StringBuilder(StringValuePairs);
+			StringBuilder sb = new StringBuilder(LanguageDeclareVarUsing+StringValuePairs);
 			if (StringValuePairs.indexOf(LanguageDeclareVarUsing) == 0) {
-				sb.deleteCharAt(0);// find Name - Value separator
+				sb.deleteCharAt(StringValuePairs.indexOf(LanguageDeclareVarUsing));// find Name - Value separator
 			}
 
 			String[] string_to_processtmp = { "", sb.toString() };

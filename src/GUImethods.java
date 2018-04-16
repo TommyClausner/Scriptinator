@@ -166,7 +166,12 @@ public class GUImethods extends StyleSheet {
 		if (split) {
 			value_split = value_split[0].split(StyleSheet.eolDelimiter);
 		} else {
+			StringBuilder notsplit = new StringBuilder(value_split[0]);
+			notsplit.deleteCharAt(0);
+			values = notsplit.toString();
+			value_split = new String[] { notsplit.toString() };
 		}
+
 		c.gridx = 1;
 		panel.add(new JLabel(title), c);
 		c.gridx = 0;
