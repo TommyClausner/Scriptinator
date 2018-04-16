@@ -110,7 +110,7 @@ public class Script extends StyleSheet implements Serializable {
 				.ReadScriptFromFileAndSplitHeaderAndCode(internal_map.get(InternalVarNameFile))[1];
 
 		code_map = new LinkedHashMap<String, String>();
-		code_map.put("", Code);
+		code_map.put("", LanguageDeclareVarUsing + Code);
 
 		input_map = tmp.input_map;
 		output_map = tmp.output_map;
