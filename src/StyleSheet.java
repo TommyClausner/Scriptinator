@@ -153,7 +153,7 @@ public class StyleSheet {
 	protected static int MainWindowButtonSize = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 20;
 
 	// location of qsub submission template file
-	protected static String QsubTemplateLocation = "res" + filesep + "RunOnQsubTemplate.sh";
+	protected static String QsubTemplateLocation = "RunOnQsubTemplate.sh";
 
 	// variable name indicating the path of the script to be wrapped
 	protected static String QsubRunScriptVarName = "ScriptToRun";

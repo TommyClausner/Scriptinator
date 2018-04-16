@@ -1,5 +1,22 @@
 # Tommy's Scriptinator 3000 TM
 
+## Quick Start
+### note beforehand
+it is possible to run the program using the .jar file. If doing so, be aware that the program was compiled using the Bash Script StyleSheet. In this early version it is not yet possible to change the style in the compiled version. If you desire changing the style sheet, then make sure you have install at least JDK 9 (http://www.oracle.com/technetwork/java/javase/downloads/jdk9-downloads-3848520.html). Download the github repository using "git clone https://github.com/TommyClausner/Scriptinator". Navigate to /src. There you can modify the StyleSheet.java  Afterwards run "javac Scriptinator.java". To start the program use "java Scriptinator"
+
+### now really the quick start
+After opening the application a window will appear exposing a button panel on the top edge.
+
+- You can create a new node by double clicking the window at some free position.
+- Once a node appeared you can view and manipulate it's properties by double clicking it
+- Connect two nodes by first selecting the *from* node by single clicking it and then selecting the *to* node by single clicking it. You can remove a node by redoing the above operation.
+- click the "S" button to save a pipeline
+- click the "L" button to load a pipeline
+- click the "P" button to make a runnable pipeline
+- click the "X" button to exit
+- click the "/" button to clear the pipeline
+- "!" and "?" open the about and help window
+
 ## Main Purpose
 Tommy's Scriptinator 3000 TM aims to provide an interface between code line programming and graphical user interfaces. This can become especially handy in science, where users in general are less skilled in using multiple programming languages. E.g. students entering the field are often confronted with analysis scripts that are stitched together by another person and spend often a significant amount of time figuring out the workflow. This is where Tommy's Scriptinator 3000 TM slips in.
 
@@ -87,7 +104,7 @@ Within the right column the control buttons are located.
 All code elements that were part of the sourced script, but not of the header are displayed here. Changes for instance in variable naming in the header section could be applied directly to the code in here.
 
 ## Qsub support
-If qsub support was enabled (setting useqsub to *true*) than a white indicator ring around the script icon will appear to indicate qsub support. This means that a predefined template script (in /templates) will be used to wrap the respective evoking script into a qsub command and submits it.
+If qsub support was enabled (setting useqsub to *true*) than a white indicator ring around the script icon will appear to indicate qsub support. This means that a predefined template script must be provided next to the main function. The default name is "RunOnQsubTemplate.sh"
 
 ## The **P** option
 This function is used to create executable pipelines. Choosing the **P** or **P**ipe it! option in the main menu, will cause a dialog to spawn asking to select the folder where the pipeline is going to be saved. 

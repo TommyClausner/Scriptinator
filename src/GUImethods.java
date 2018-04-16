@@ -200,7 +200,7 @@ public class GUImethods extends StyleSheet {
 		text.setFont(StyleSheet.DefaultCodeFont);
 		text.append(textIn);
 
-		// scrollers to be added
+		// scrollers to eventually be added
 		JScrollPane scroller = new JScrollPane(text);
 		if (HorScroller) {
 			scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -227,8 +227,11 @@ public class GUImethods extends StyleSheet {
 	public static JPanel[] makeMultiPanelForProperties(String[] PanelsToAdd,
 			LinkedHashMap<String, String>[] HashMapsToAdd) {
 		int iscode;
+		
+		// how many mono spaced characters are displayed on the panel
 		int NumRows = 15;
 		int NumCols = 30;
+		
 		int NumRowsDyn = 1;
 		JPanel[] PropertiesPanels = new JPanel[PanelsToAdd.length];
 		for (int n = 0; n < PanelsToAdd.length; n++) {

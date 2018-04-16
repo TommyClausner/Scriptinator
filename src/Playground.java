@@ -39,6 +39,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,8 +47,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,11 +88,19 @@ public class Playground extends StyleSheet {
 	protected static JPanel mainPanel;
 	protected static GridBagConstraints c = new GridBagConstraints();
 
+	// used to make connection lines
 	protected static ArrayList<Script> selectedScripts = new ArrayList<Script>();
 
+	// list of all icons on the panel
 	protected static ArrayList<ScriptIcon> selectedScriptIcons = new ArrayList<ScriptIcon>();
+
+	// hierarchy as obtained from the graph
 	protected static LinkedHashMap<Script, Integer> ScriptHierarchy = new LinkedHashMap<Script, Integer>();
+
+	// script objects that are linked to the icons
 	protected static LinkedHashMap<Integer, Script> ScriptsAdded = new LinkedHashMap<Integer, Script>();
+
+	// the reverse map from above
 	protected static LinkedHashMap<Script, Integer> IndicesScriptsAdded = new LinkedHashMap<Script, Integer>();
 
 	protected static String SavePath = "";
@@ -114,6 +129,7 @@ public class Playground extends StyleSheet {
 			}
 		});
 
+		// window properties
 		ConnectorsDialog.setTitle("Tommy's Scriptinator 3000 TM");
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		ConnectorsDialog.setSize((int) (dimension.getWidth() * MainWindowOccupiesThisMuchOfMyScreen),
@@ -154,6 +170,8 @@ public class Playground extends StyleSheet {
 		}
 
 		// make new connection lines
+		// iterates through scripts and checks if they're connected to other scripts. If
+		// so than it draws the respective line
 		for (int n = 0; n < ScriptsAdded.size(); n++) {
 			thisScript = ScriptsAdded.get(n);
 			if (thisScript.ConnectionFrom != null) {
@@ -195,6 +213,8 @@ public class Playground extends StyleSheet {
 	// create Mouse Listener for main Panel
 	protected static class ConnectorsPanelMouseListener implements MouseListener {
 
+		// empty mouse Event methods are due to the fact that implementing the
+		// MouseListener requires them to be set
 		@Override
 		public void mouseClicked(MouseEvent event) {
 
@@ -238,6 +258,7 @@ public class Playground extends StyleSheet {
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.CENTER, MainWindowButtonSize / 3, 0));
 		ControlPanel.setFont(DefaultGUIFont);
 
+		// button for clearing the panel
 		JButton clearbtn = new RoundButton("/");
 		clearbtn.setFont(GUIScriptIconFont);
 		clearbtn.setForeground(Color.white);
@@ -253,6 +274,7 @@ public class Playground extends StyleSheet {
 		});
 		ControlPanel.add(clearbtn);
 
+		// button for saving the pipeline
 		JButton savebtn = new RoundButton("S");
 		savebtn.setFont(GUIScriptIconFont);
 		savebtn.setForeground(Color.white);
@@ -270,6 +292,7 @@ public class Playground extends StyleSheet {
 		});
 		ControlPanel.add(savebtn);
 
+		// button for loading a pipeline
 		JButton loadbtn = new RoundButton("L");
 		loadbtn.setFont(GUIScriptIconFont);
 		loadbtn.setForeground(Color.white);
@@ -287,6 +310,7 @@ public class Playground extends StyleSheet {
 		});
 		ControlPanel.add(loadbtn);
 
+		// button for making a pipeline
 		JButton pipebtn = new RoundButton("P");
 		pipebtn.setFont(GUIScriptIconFont);
 		pipebtn.setForeground(Color.white);
@@ -303,6 +327,7 @@ public class Playground extends StyleSheet {
 		});
 		ControlPanel.add(pipebtn);
 
+		// button for calling the about window
 		JButton aboutbtn = new RoundButton("!");
 		aboutbtn.setFont(GUIScriptIconFont);
 		aboutbtn.setForeground(Color.white);
@@ -314,14 +339,27 @@ public class Playground extends StyleSheet {
 		});
 		ControlPanel.add(aboutbtn);
 
+		// button for calling the README.pdf
 		JButton helpbtn = new RoundButton("?");
 		helpbtn.setFont(GUIScriptIconFont);
 		helpbtn.setForeground(Color.white);
 		helpbtn.setPreferredSize(new Dimension(MainWindowButtonSize, MainWindowButtonSize));
 		helpbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String inputPdf = "res" + filesep + "README.pdf";
+				Path tempOutput = null;
 				try {
-					Desktop.getDesktop().open(new File(System.getProperty("user.dir") + filesep + "README.pdf"));
+					tempOutput = Files.createTempFile("tmpREADME", ".pdf");
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+				tempOutput.toFile().deleteOnExit();
+				try (InputStream is = Playground.class.getClassLoader().getResourceAsStream(inputPdf)) {
+					Files.copy(is, tempOutput, StandardCopyOption.REPLACE_EXISTING);
+				} catch (IOException e1) {
+				}
+				try {
+					Desktop.getDesktop().open(tempOutput.toFile());
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -329,6 +367,7 @@ public class Playground extends StyleSheet {
 		});
 		ControlPanel.add(helpbtn);
 
+		// button for closing and exiting
 		JButton exitbtn = new RoundButton("X");
 		exitbtn.setFont(GUIScriptIconFont);
 		exitbtn.setForeground(Color.white);
@@ -353,52 +392,55 @@ public class Playground extends StyleSheet {
 	// spawn "About" information window
 	public static void showAboutInformation() {
 
-		File file = null;
+		InputStream fis;
+		String tmp = "";
+		BufferedReader reader;
+		StringBuffer HelpInfoText = new StringBuffer();
 
-		FileInputStream fis;
-		file = new File(System.getProperty("user.dir") + filesep + "About.txt");
-		String HelpInfoText = "";
+		// read from resource
 		try {
-			fis = new FileInputStream(file);
-			byte[] data = new byte[(int) file.length()];
-			fis.read(data);
+			fis = Playground.class.getResourceAsStream("res" + filesep + "About.txt");
+			reader = new BufferedReader(new InputStreamReader(fis));
+			while ((tmp = reader.readLine()) != null) {
+				HelpInfoText.append(tmp + eol);
+			}
 			fis.close();
-			HelpInfoText += new String(data, "UTF-8") + eol + eol + "This work is published under the:" + eol + eol
-					+ eol;
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		file = new File(System.getProperty("user.dir") + filesep + "LICENSE");
-
-		try {
-			fis = new FileInputStream(file);
-			byte[] data = new byte[(int) file.length()];
-			fis.read(data);
-			fis.close();
-			HelpInfoText += new String(data, "UTF-8");
-
-			// scrollers to be added
-
-			JTextArea AboutInfo = new JTextArea(HelpInfoText);
-			AboutInfo.setHighlighter(null);
-			AboutInfo.setEditable(false);
-			JDialog AboutFrame = GUImethods.makeFrame();
-
-			JScrollPane scroller = new JScrollPane(AboutInfo);
-			scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-			scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-			AboutFrame.add(scroller);
-			AboutFrame.pack();
-			AboutFrame.revalidate();
-			AboutFrame.repaint();
-			AboutFrame = GUImethods.centerFrame(AboutFrame);
-			AboutFrame.setVisible(true);
-
+			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		HelpInfoText.append(eol + "This work is published under the:" + eol + eol + eol);
+
+		// attach LICENSE content
+		try {
+			fis = Playground.class.getResourceAsStream("res" + filesep + "LICENSE");
+			reader = new BufferedReader(new InputStreamReader(fis));
+			while ((tmp = reader.readLine()) != null) {
+				HelpInfoText.append(tmp + eol);
+			}
+			fis.close();
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// scrollers to be added
+		JTextArea AboutInfo = new JTextArea(HelpInfoText.toString());
+		AboutInfo.setHighlighter(null);
+		AboutInfo.setEditable(false);
+		JDialog AboutFrame = GUImethods.makeFrame();
+
+		JScrollPane scroller = new JScrollPane(AboutInfo);
+		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+		AboutFrame.add(scroller);
+		AboutFrame.pack();
+		AboutFrame.revalidate();
+		AboutFrame.repaint();
+		AboutFrame = GUImethods.centerFrame(AboutFrame);
+		AboutFrame.setVisible(true);
 
 	}
 
@@ -408,6 +450,8 @@ public class Playground extends StyleSheet {
 		LayoutManager overlayConnections = new OverlayLayout(Connection);
 		Connection.setLayout(overlayConnections);
 
+		// consists of outer black ring and inner white filled circle
+		// this is achived by overlaying circles of different size
 		JLabel innerCircle = new JLabel(GUIHelper.new RoundIcon(size, 1, Color.WHITE));
 		JLabel outerCircle = new JLabel(GUIHelper.new RoundIcon(size, 0, Color.BLACK));
 
@@ -434,16 +478,18 @@ public class Playground extends StyleSheet {
 		int NumXPoints = (int) (Math.sqrt(Math.pow(XDiff, 2) + Math.pow(YDiff, 2)) / (float) space);
 		int NumYPoints = (int) (Math.sqrt(Math.pow(XDiff, 2) + Math.pow(YDiff, 2)) / (float) space);
 
+		// happens when the x or y coordinate is constant. In that case we do not have
+		// to take the longer path caused by the diagonal into account
 		if (NumYPoints < 1) {
 			NumYPoints = NumXPoints;
 		} else if (NumXPoints < 1) {
 			NumXPoints = NumYPoints;
 		}
+
 		if (NumYPoints < 1 & NumXPoints < 1) {
 			NumXPoints = 1;
 			NumYPoints = 1;
 		}
-
 		float[] YPoints = HelperMethods.linspace(p1.getY(), p2.getY(), NumYPoints);
 		float[] XPoints = HelperMethods.linspace(p1.getX(), p2.getX(), NumXPoints);
 
@@ -574,6 +620,8 @@ public class Playground extends StyleSheet {
 		ArrayList<Integer> uniquenewIndices = new ArrayList<Integer>();
 		Set<Integer> set;
 
+		// start from cap and go back until the script does not have any connections
+		// "from" another script
 		while (!currentIndices.isEmpty()) {
 			newIndices.clear();
 			uniquenewIndices.clear();
@@ -595,6 +643,8 @@ public class Playground extends StyleSheet {
 		}
 		Integer maxVal;
 		Integer compVal;
+
+		// rearrange caps in the hierarchy
 		for (Integer currCap : findCaps()) {
 			maxVal = 0;
 
@@ -616,17 +666,23 @@ public class Playground extends StyleSheet {
 		LinkedHashMap<Integer, Integer> allNotCappingIndices = new LinkedHashMap<Integer, Integer>();
 		LinkedHashMap<Integer, Integer> allCappingIndices = new LinkedHashMap<Integer, Integer>();
 
+		// iterate through all scripts
 		while (it.hasNext()) {
 			Map.Entry<Integer, Script> pair = (Map.Entry<Integer, Script>) it.next();
 
+			// assume every script is a cap
 			allCappingIndices.put(allCappingIndices.size(), pair.getKey());
 
+			// all scripts that are listed in some script's ConnectionFrom list must be
+			// not-caps
 			for (Integer value : pair.getValue().ConnectionFrom) {
 				allNotCappingIndices.put(allNotCappingIndices.size(), value);
 			}
 		}
 		int invalidCapping;
 		for (int m = 0; m < allNotCappingIndices.size(); m++) {
+			// a cap listed in some script's ConnectionFrom list is invalid, hence needs to
+			// be remove from the cap list. All remaining scripts are caps
 			invalidCapping = allNotCappingIndices.get(m);
 			allCappingIndices.values().removeAll(Collections.singleton(invalidCapping));
 		}
@@ -638,6 +694,13 @@ public class Playground extends StyleSheet {
 	// pipeline due to the use of a qsub job submission wrapper script)
 	public static Script newQsubScript(Script ScriptIn) throws FileNotFoundException {
 		Script Qsub = new Script();
+
+		// is default qsub script wasn't found open selection dialog
+		File tmp = new File(QsubTemplateLocation);
+		if (!tmp.exists()) {
+			QsubTemplateLocation = GUImethods.FileSelectionDialog("select qsub template", LanguageScriptTypeName,
+					LanguageFileExtension, true, true);
+		}
 
 		Qsub.internal_map.put(InternalVarNameFile, QsubTemplateLocation);
 
@@ -655,6 +718,8 @@ public class Playground extends StyleSheet {
 	// creates runnable pipeline in form of a language specific script file, keeping
 	// the graphically defined dependencies
 	public static void makePipeline() throws IOException {
+
+		// initialize path
 		String path = GUImethods.FileSelectionDialog("Select Pipeline folder", "", "", true, false);
 
 		String filename_ = (String) JOptionPane.showInputDialog(GUImethods.makeFrame(), "Choose Pipeline Name",
@@ -666,6 +731,7 @@ public class Playground extends StyleSheet {
 
 		String PipelineCode = LanguageEnvironment + eol;
 
+		// iterate through sorted scripts
 		for (Script thisScript : sortScriptsByHierarchy()) {
 
 			thisScript.internal_map.put(InternalVarNameFile,
@@ -678,6 +744,7 @@ public class Playground extends StyleSheet {
 			out.write(newFile);
 			out.close();
 
+			// make qsub wrapped script if necessary
 			if (thisScript.hasqsub) {
 				thisScript = newQsubScript(thisScript);
 				thisScript.internal_map.put(InternalVarNameLabel, thisScript.internal_map.get(InternalVarNameLabel));

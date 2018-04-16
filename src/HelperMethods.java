@@ -41,6 +41,8 @@ public class HelperMethods extends StyleSheet {
 		Boolean hasHeader = false;
 		Scanner scanner = null;
 		scanner = new Scanner(file);
+
+		// scan until you find a header and if so set hasHeader to true
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
 			if (line.contains(IndStringBeginHeader)) {
@@ -54,6 +56,7 @@ public class HelperMethods extends StyleSheet {
 
 	// convert a LinkedHashMap<String, String> to a strings of the form
 	// "Name"+string_used_for_value_declaration+"Value"+eol
+	// this methods converts between internal and human readable representation
 	public static String HashMap2StringValuePairs(LinkedHashMap<String, String> inmap, String prefix) {
 		String constructedHeadertmp = "";
 		Iterator<Entry<String, String>> tmp_map = inmap.entrySet().iterator();
@@ -87,6 +90,7 @@ public class HelperMethods extends StyleSheet {
 	// convert strings of the form
 	// "Name"+string_used_for_value_declaration+"Value"+eol to a
 	// LinkedHashMap<String, String>
+	// this methods converts between internal and human readable representation
 	public static LinkedHashMap<String, String> StringValuePairs2HashMap(String StringValuePairs, Boolean iscode) {
 		LinkedHashMap<String, String> out_map = new LinkedHashMap<String, String>();
 		String[] string_to_process;
@@ -95,7 +99,7 @@ public class HelperMethods extends StyleSheet {
 		// retrieved differently (it has no Name and declaration String)
 		if (iscode) {
 
-			StringBuilder sb = new StringBuilder(LanguageDeclareVarUsing+StringValuePairs);
+			StringBuilder sb = new StringBuilder(LanguageDeclareVarUsing + StringValuePairs);
 			if (StringValuePairs.indexOf(LanguageDeclareVarUsing) == 0) {
 				sb.deleteCharAt(StringValuePairs.indexOf(LanguageDeclareVarUsing));// find Name - Value separator
 			}
@@ -122,7 +126,7 @@ public class HelperMethods extends StyleSheet {
 		return out_map;
 	}
 
-	// Strip Commented Lines
+	// Strip Commented Lines - removes all commented lines
 	protected static String stripCommentedLines(String StringToStrip) {
 		String stripedFile = "";
 		for (String currenLine : StringToStrip.split(eolDelimiter)) {
