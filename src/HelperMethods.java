@@ -97,7 +97,7 @@ public class HelperMethods extends StyleSheet {
 
 			StringBuilder sb = new StringBuilder(StringValuePairs);
 			if (StringValuePairs.indexOf(LanguageDeclareVarUsing) == 0) {
-				sb.deleteCharAt(StringValuePairs.indexOf(LanguageDeclareVarUsing));// find Name - Value separator
+				sb.deleteCharAt(0);// find Name - Value separator
 			}
 
 			String[] string_to_processtmp = { "", sb.toString() };
