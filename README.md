@@ -17,6 +17,28 @@ After opening the application a window will appear exposing a button panel on th
 - click the "/" button to clear the pipeline
 - "!" and "?" open the about and help window
 
+### Hello World example
+
+- open Tommy'y Scriptinator 3000 TM
+- double click at a random position
+- double click the icon that just appeared
+- select load script
+- navigate to the example scripts folder further to the hello world example and select "Hello.sh"
+- you will notice a change in the properties window
+- if desired change within the "Input" section which language should be selected (coded in the Languages.txt file)
+- click *Confirm and Close* 
+- repeat the above procedure, but select the "World.sh"
+- connect the two scripts by selecting the hello script first and afterwards the world script by single clicking them
+- you will see a connection line appearing being thicker at the "hello end"
+- click **P** in the main button panel
+- select a folder where to store the pipeline
+- choose a name
+- copy the "Language.txt" into the pipeline folder
+- execute *yourpipeline* file by typing "sh yourpipeline.sh"
+- congrats you've just created your first pipeline
+
+Note that you can also load the prepared hello world pipeline "HelloWorld.pipe", that has all steps above already set up.
+
 ## Main Purpose
 Tommy's Scriptinator 3000 TM aims to provide an interface between code line programming and graphical user interfaces. This can become especially handy in science, where users in general are less skilled in using multiple programming languages. E.g. students entering the field are often confronted with analysis scripts that are stitched together by another person and spend often a significant amount of time figuring out the workflow. This is where Tommy's Scriptinator 3000 TM slips in.
 

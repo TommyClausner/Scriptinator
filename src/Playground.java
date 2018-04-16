@@ -737,9 +737,10 @@ public class Playground extends StyleSheet {
 			thisScript.internal_map.put(InternalVarNameFile,
 					path + filesep + thisScript.internal_map.get(InternalVarNameLabel) + "." + LanguageFileExtension);
 			thisScript.UpdateHeaderString();
+			StringBuilder code = new StringBuilder(thisScript.code_map.get(""));
+			code.deleteCharAt(0);
 
-			String newFile = LanguageEnvironment + eol + eol + thisScript.file_header + eol
-					+ thisScript.code_map.get("") + eol;
+			String newFile = LanguageEnvironment + eol + eol + thisScript.file_header + eol + code.toString() + eol;
 			BufferedWriter out = new BufferedWriter(new FileWriter(thisScript.internal_map.get(InternalVarNameFile)));
 			out.write(newFile);
 			out.close();
@@ -753,8 +754,10 @@ public class Playground extends StyleSheet {
 						+ thisScript.internal_map.get(InternalVarNameLabel) + "." + LanguageFileExtension);
 				thisScript.UpdateHeaderString();
 
-				newFile = LanguageEnvironment + eol + eol + thisScript.file_header + eol + thisScript.code_map.get("")
-						+ eol;
+				code = new StringBuilder(thisScript.code_map.get(""));
+				code.deleteCharAt(0);
+
+				newFile = LanguageEnvironment + eol + eol + thisScript.file_header + eol + code + eol;
 				out = new BufferedWriter(new FileWriter(thisScript.internal_map.get(InternalVarNameFile)));
 				out.write(newFile);
 				out.close();
