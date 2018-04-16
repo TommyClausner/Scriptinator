@@ -31,7 +31,7 @@ MiscVar=none
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-qsub -l walltime=$walltime,mem=$memory -F "$DIR ${@:1}" $ScriptToRun
+qsub -q $jobtype -l walltime=$walltime,mem=$memory -F "$DIR ${@:1}" $ScriptToRun
 
 PIDqsub=$(qstat | awk -F' ' '{print $1}' | tail -1)
 statusqsub=$(qstat $PIDqsub | awk -F' ' '{print $5}' | tail -1)
