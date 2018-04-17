@@ -725,10 +725,6 @@ public class Playground extends StyleSheet {
 		String filename_ = (String) JOptionPane.showInputDialog(GUImethods.makeFrame(), "Choose Pipeline Name",
 				"Pipeline Name", JOptionPane.PLAIN_MESSAGE, null, null, null);
 
-		new File(path + filesep + filename_).mkdirs();
-
-		path += (filesep + filename_);
-
 		String PipelineCode = LanguageEnvironment + eol;
 
 		// iterate through sorted scripts
