@@ -1,5 +1,7 @@
 # Tommy's Scriptinator 3000 TM
 
+![example image](https://github.com/TommyClausner/Scriptinator/blob/master/example_screenshot.png?raw=true)
+
 ## Quick Start
 ### note beforehand
 it is possible to run the program using the .jar file. If doing so, be aware that the program was compiled using the Bash Script StyleSheet. In this early version it is not yet possible to change the style in the compiled version. If you desire changing the style sheet, then make sure you have install at least JDK 9 (http://www.oracle.com/technetwork/java/javase/downloads/jdk9-downloads-3848520.html). Download the github repository using "git clone https://github.com/TommyClausner/Scriptinator". Navigate to /src. There you can modify the StyleSheet.java  Afterwards run "javac Scriptinator.java". To start the program use "java Scriptinator"
